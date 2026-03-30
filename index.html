@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>newapi-Announcement 公告生成器（报纸风）</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="export-css.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <header class="app-header">
+      <div class="brand" aria-label="newapi-Announcement 公告生成器">
+        <div class="brand-mark" aria-hidden="true">n</div>
+        <div class="brand-text">
+          <div class="brand-name">newapi-Announcement 公告生成器</div>
+          <div class="brand-sub">报纸风 · 多标题 · AI 辅助 · 一键导出</div>
+        </div>
+      </div>
+
+      <div class="header-actions" aria-label="全局操作">
+        <button id="btnSample" class="btn btn-secondary" type="button">示例</button>
+        <button id="btnReset" class="btn btn-ghost" type="button">清空</button>
+        <span class="split" aria-hidden="true"></span>
+        <button id="btnImport" class="btn btn-ghost" type="button">导入 JSON/HTML</button>
+        <input id="fileImport" type="file" accept=".json,.html,application/json,text/html" hidden />
+        <button id="btnCopy" class="btn btn-ghost" type="button">复制</button>
+        <button id="btnExport" class="btn btn-primary" type="button">导出</button>
+        <button id="btnPrint" class="btn btn-secondary" type="button">打印 / PDF</button>
+      </div>
+    </header>
+
+    <main id="main" class="app-main">
+      <section class="panel panel-form" aria-label="编辑区">
+        <form id="form" class="form" autocomplete="off">
+          <div class="section">
+            <details class="details">
+              <summary>AI 一键生成（可选）</summary>
+              <div class="details-body">
+                <div class="field">
+                  <label for="aiPrompt">把你想发的内容（或多条要点）直接发给 AI</label>
+                  <textarea
+                    id="aiPrompt"
+                    name="aiPrompt"
+                    class="input textarea"
+                    rows="5"
+                    placeholder="例如：\n1) 明天 23:00 灰度发布 v3.2.0\n2) 新增 Trace-ID 与错误码统一\n3) 影响：旧 SDK 需升级\n4) 反馈方式：工单 + Trace-ID"
+                  ></textarea>
+                </div>
+
+                <div class="grid-2">
+                  <div class="field">
+                    <label for="aiCount">标题条数（可选）</label>
+                    <input
+                      id="aiCount"
+                      name="aiCount"
+                      class="input"
+                      type="number"
+                      min="1"
+                      max="10"
+                      placeholder="例如：3"
+                    />
+                  </div>
+                  <div class="field">
+                    <label>&nbsp;</label>
+                    <button id="btnAiGenerate" class="btn btn-primary" type="button">AI 生成并填充</button>
+                  </div>
+                </div>
+
+                <details class="details details-nested">
+                  <summary>AI 设置（OpenAI 兼容 / 内部接口）</summary>
+                  <div class="details-body">
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="aiBaseUrl">Base URL（留空则请求 /api/ai/announcement）</label>
+                        <input
+                          id="aiBaseUrl"
+                          name="aiBaseUrl"
+                          class="input"
+                          placeholder="例如：https://api.openai.com 或 https://your-proxy.example.com"
+                        />
+                      </div>
+                      <div class="field">
+                        <label for="aiModel">Model</label>
+                        <input id="aiModel" name="aiModel" class="input" placeholder="例如：gpt-4.1-mini" />
+                      </div>
+                    </div>
+
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="aiApiKey">API Key（不建议前端直连生产）</label>
+                        <input
+                          id="aiApiKey"
+                          name="aiApiKey"
+                          class="input"
+                          type="password"
+                          placeholder="建议走后端代理，避免 Key 暴露"
+                        />
+                      </div>
+                      <div class="field">
+                        <label>&nbsp;</label>
+                        <label class="toggle">
+                          <input id="aiRemember" name="aiRemember" type="checkbox" />
+                          <span>记住 AI 设置到本地</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="help">
+                      若浏览器提示跨域（CORS）失败，请把 Base URL 指向你们的后端代理（或使用留空的内部接口）。
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </details>
+          </div>
+
+          <div class="section">
+            <div class="section-title">基础信息</div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="type">公告类型</label>
+                <select id="type" name="type" class="input">
+                  <option value="产品更新" selected>产品更新</option>
+                  <option value="运维通知">运维通知</option>
+                  <option value="安全公告">安全公告</option>
+                  <option value="活动公告">活动公告</option>
+                  <option value="其他">其他</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="date">发布日期</label>
+                <input id="date" name="date" type="date" class="input" />
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="field">
+                <label for="dept">发布部门</label>
+                <input id="dept" name="dept" class="input" maxlength="40" placeholder="例如：平台研发" />
+              </div>
+              <div class="field">
+                <label for="severity">重要性</label>
+                <select id="severity" name="severity" class="input">
+                  <option value="高">高</option>
+                  <option value="中" selected>中</option>
+                  <option value="低">低</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="issue">期号（可选）</label>
+                <input id="issue" name="issue" class="input" maxlength="20" placeholder="例如：No. 024" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="version">版本 / 里程碑（可选）</label>
+                <input
+                  id="version"
+                  name="version"
+                  class="input"
+                  maxlength="40"
+                  placeholder="例如：v3.2.0 / 里程碑#18"
+                />
+              </div>
+              <div class="field">
+                <label for="tags">标签（逗号分隔）</label>
+                <input id="tags" name="tags" class="input" placeholder="例如：API, 发布, 可观测性" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">侧栏信息（可选）</div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="highlights">亮点（每行一条）</label>
+                <textarea
+                  id="highlights"
+                  name="highlights"
+                  class="input textarea"
+                  rows="6"
+                  placeholder="- 新增 ...&#10;- 优化 ...&#10;- 修复 ..."
+                ></textarea>
+              </div>
+              <div class="field">
+                <label for="schedule">时间安排（每行一条）</label>
+                <textarea
+                  id="schedule"
+                  name="schedule"
+                  class="input textarea"
+                  rows="6"
+                  placeholder="2026-03-18 23:00 开始发布&#10;2026-03-19 00:30 发布完成"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">内容条目（多标题）</div>
+
+            <div class="story-actions" aria-label="条目操作">
+              <div class="story-hint">第一条为主标题；其余条目会在正文中按报纸分栏样式整合展示。</div>
+              <button id="btnAddStory" class="btn btn-secondary" type="button">添加标题</button>
+            </div>
+
+            <div id="stories" class="stories" aria-label="标题列表"></div>
+            <div class="help">正文支持简单 Markdown：`##`、`-`、`>`、`---`、`**`、`*`、`` `代码` ``；也可切换为 HTML（会过滤危险标签）。</div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">展示选项</div>
+
+            <div class="field">
+              <label for="masthead">刊头名称（默认 newapi-Announcement）</label>
+              <input
+                id="masthead"
+                name="masthead"
+                class="input"
+                maxlength="60"
+                placeholder="留空将使用默认值 newapi-Announcement"
+              />
+            </div>
+
+            <div class="options">
+              <label class="toggle">
+                <input id="optDropcap" name="optDropcap" type="checkbox" checked />
+                <span>首段首字下沉</span>
+              </label>
+            </div>
+
+            <div class="grid-3">
+              <div class="field">
+                <label for="columns">正文列数</label>
+                <select id="columns" name="columns" class="input">
+                  <option value="2" selected>2 列</option>
+                  <option value="3">3 列</option>
+                  <option value="1">1 列</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="accent">强调色</label>
+                <input id="accent" name="accent" class="input" type="color" value="#EC4899" />
+              </div>
+              <div class="field">
+                <label for="paperTheme">公告主题</label>
+                <select id="paperTheme" name="paperTheme" class="input">
+                  <option value="system" selected>随系统</option>
+                  <option value="light">浅色</option>
+                  <option value="dark">深色</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="status" class="status" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+            <section class="panel panel-preview" aria-label="预览区">
+        <div class="preview-toolbar">
+          <div class="preview-tabs" role="tablist" aria-label="预览切换">
+            <button id="tabPreview" class="tab tab-active" type="button" role="tab" aria-selected="true" aria-controls="previewPane">预览</button>
+            <button id="tabCode" class="tab" type="button" role="tab" aria-selected="false" aria-controls="codePane">代码</button>
+          </div>
+          <div class="preview-meta" id="previewMeta"></div>
+        </div>
+
+        <div id="previewPane" class="preview-wrap" role="tabpanel" aria-label="公告预览">
+          <div id="preview" class="paper" aria-label="公告预览内容">
+            <div class="paper-empty">填写左侧内容后，这里会实时生成报纸风公告。</div>
+          </div>
+        </div>
+
+        <div id="codePane" class="preview-wrap preview-code-wrap" role="tabpanel" aria-label="HTML（内联样式）代码" hidden>
+          <pre id="previewCode" class="code-block" aria-label="HTML（内联样式）代码"></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="foot-note">提示：NewAPI 公告若支持内联样式 HTML，优先用“复制 → NewAPI HTML（内联样式）”；否则用“复制 → Markdown（NewAPI）”。导出支持 JSON/HTML；如浏览器拦截自动下载/复制，会自动弹出手动复制框。</div>
+    </footer>
+
+
+    <div id="actionModal" class="modal" hidden>
+      <div class="modal-backdrop" data-action="close"></div>
+      <div class="modal-dialog modal-sm" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle">
+        <div class="modal-header">
+          <div id="actionModalTitle" class="modal-title">选择操作</div>
+          <button id="btnActionModalClose" class="btn btn-ghost btn-mini" type="button" data-action="close">关闭</button>
+        </div>
+        <div class="modal-body">
+          <div id="actionModalOptions" class="action-options" role="list"></div>
+        </div>
+      </div>
+    </div>
+    <div id="copyModal" class="modal" hidden>
+      <div class="modal-backdrop" data-action="close"></div>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+        <div class="modal-header">
+          <div id="copyModalTitle" class="modal-title">手动复制</div>
+          <button id="btnCopyModalClose" class="btn btn-ghost btn-mini" type="button" data-action="close">关闭</button>
+        </div>
+        <div class="modal-body">
+          <textarea id="copyModalText" class="input textarea" rows="12" readonly></textarea>
+          <div class="modal-actions">
+            <button id="btnCopyModalSelect" class="btn btn-secondary" type="button">全选</button>
+            <button id="btnCopyModalCopy" class="btn btn-primary" type="button">复制</button>
+          </div>
+          <div class="help">若浏览器禁止自动复制，请点“全选”，再按 Ctrl+C</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          if (window.__NEWAPI_ANNOUNCER_READY__) return;
+          const preview = document.getElementById("preview");
+          if (!preview) return;
+          preview.innerHTML =
+            '<div class="paper-empty">页面脚本未能初始化（预览/复制不可用）。建议：运行 node server.js 后访问 http://localhost:3210，或打开浏览器控制台查看报错。</div>';
+        }, 600);
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+

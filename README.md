@@ -1,23 +1,132 @@
-﻿# newapi 公告生成器
+﻿# newapi-Announcement Generator (Newspaper Style)
 
-一个纯前端、零依赖的公告生成器：左侧编辑，右侧实时预览报纸/杂志风公告。
+[English](./README.md) | [中文](./readme-cn.md)
 
-## 功能
+A zero-dependency announcement editor that renders a newspaper-style layout in real time.  
+Left panel: authoring. Right panel: preview/code/export-ready output.
 
-- 多标题合并：支持把多条内容整合在一个公告里一起发（默认第一条为头条，当然也可以手动修改顺序）
-- 正文渲染：简单 Markdown；也支持 HTML（会过滤危险标签）
-- 导入/导出：JSON、HTML（点击“导出”后选择格式；HTML 内会内嵌 JSON，方便二次导入继续编辑）
-- 复制发布：点击“复制”后选择格式（Markdown / NewAPI 内联 HTML / HTML 源码）
-  > 备注：提供了“NewAPI 内联样式 HTML”版本，粘贴后更容易直接渲染。
+## Install
 
-- 打印/PDF：优先用隐藏 iframe 触发打印；若被拦截会给出可手动保存的 HTML
-- AI 辅助（可选）：把要发的内容贴给 AI，自动生成标题/副标题/时间/正文
+### Prerequisites
 
-## 使用
+- Modern browser (required)
+- Node.js 18+ (optional, only if you want the local AI proxy endpoint in `server.js`)
 
-目前有两种使用方式
-- 直接打开`index.html`
-- 启动本地Server
-  - `node server.js`
-  - 打开`http://localhost:3210`
-  > 说明：样式默认会尝试加载 Google Fonts（Newsreader/Roboto）。若网络不可用，会自动使用系统字体回退，不影响使用。
+### Get the project
+
+1. Clone or download this repository.
+2. No package installation is required (`npm install` is not needed).
+
+### Quick verification
+
+- Frontend-only mode:
+  - Open `index.html` directly in your browser.
+- Local server mode:
+  - Start with `node server.js`
+  - Open `http://localhost:3210`
+
+## Uninstall
+
+This project does not install global packages by itself. To clean it up:
+
+1. Stop the local server process (if running).
+2. Remove local browser data for this app (optional):
+   - `localStorage` keys:
+     - `newapi-announcement-generator:v2`
+     - `newapi-announcement-generator:v1`
+     - `newapi-announcement-generator:ai:v1`
+3. Remove optional shell environment variables from your session if you set them:
+   - `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`
+   - `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`
+   - `PORT`
+4. Delete the project directory when no longer needed.
+
+## Usage
+
+### 1) Edit and preview
+
+1. Fill in basic metadata (type/date/dept/severity/version/tags).
+2. Add one or more stories (the first one is rendered as the main headline).
+3. Tune display options (columns, accent color, theme, drop cap).
+4. Check both tabs:
+   - `Preview`: rendered announcement
+   - `Code`: inline HTML output
+
+### 2) Import / export
+
+- Import supports:
+  - `.json`
+  - `.html` exported by this tool (embedded state is read from `#newapi-announcement-state`)
+- Export supports:
+  - JSON (`newapi-announcement_<date>_<title>.json`)
+  - HTML (`newapi-announcement_<date>_<title>.html`)
+
+### 3) Copy and publish
+
+- `Markdown (NewAPI)`: best compatibility
+- `NewAPI HTML (inline style)`: richer layout where HTML is accepted
+- `HTML source`: full HTML document
+
+### 4) Print / PDF
+
+- Uses browser print flow from generated HTML.
+- If popup/download is blocked, the app opens a manual copy dialog with full HTML.
+
+### 5) AI-assisted drafting (optional)
+
+- If AI Base URL is empty, frontend calls local proxy endpoint: `/api/ai/announcement` (recommended).
+- If AI Base URL is provided, frontend calls `${baseUrl}/v1/chat/completions` directly and needs API Key in browser.
+
+## Configuration / Customization
+
+### Server environment variables (`server.js`)
+
+| Variable | Default | Purpose |
+|------|------|------|
+| `PORT` | `3210` | Local HTTP server port |
+| `OPENAI_API_KEY` or `AI_API_KEY` | none | API key used by `/api/ai/announcement` |
+| `OPENAI_BASE_URL` or `AI_BASE_URL` | `https://api.openai.com/v1` | OpenAI-compatible base URL |
+| `OPENAI_MODEL` or `AI_MODEL` | `gpt-4.1-mini` | Model name for chat completions |
+
+### AI panel runtime options (`index.html` + `app.js`)
+
+| Option | Default | Notes |
+|------|------|------|
+| `AI Base URL` | empty | Empty means use local `/api/ai/announcement` |
+| `AI Model` | `gpt-4.1-mini` | Used for direct OpenAI-compatible calls |
+| `API Key` | empty | Required for direct browser-side AI calls |
+| `Remember AI settings` | off | Stores settings in localStorage key `newapi-announcement-generator:ai:v1` |
+
+### Announcement rendering options
+
+| Field | Default | Supported values / behavior |
+|------|------|------|
+| `masthead` | `newapi-Announcement` | Header name shown at top |
+| `columns` | `2` | `1`, `2`, `3` |
+| `accent` | `#EC4899` | Hex color (e.g. `#2563EB`) |
+| `paperTheme` | `system` | `system`, `light`, `dark` |
+| `optDropcap` | `true` | Enables first-letter drop cap style |
+| `stories[].format` | `markdown` | `markdown` or `html` |
+
+### Data persistence
+
+| Key | Purpose |
+|------|------|
+| `newapi-announcement-generator:v2` | Main editor state |
+| `newapi-announcement-generator:v1` | Legacy state fallback |
+| `newapi-announcement-generator:ai:v1` | Saved AI settings |
+
+## Project Structure
+
+| Path | Purpose |
+|------|------|
+| `index.html` | Main UI layout and form controls |
+| `app.js` | Editor logic, state management, rendering, import/export/copy/print, AI flow |
+| `styles.css` | App styles and newspaper layout styles |
+| `export-css.js` | Export-time CSS embedded into generated HTML |
+| `server.js` | Optional local static server + AI proxy endpoint |
+| `debug.js` | Temporary DOM/localStorage debug helper script |
+| `app.js.corrupted.bak` | Backup file (historical/corrupted copy) |
+| `.project-folder-tidy.plan.json` | Cleanup planning artifact |
+| `design-system/` | Design system documentation and rules |
+| `design-system/newapi-公告生成器/MASTER.md` | Master design spec for this project |

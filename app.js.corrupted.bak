@@ -1,0 +1,2558 @@
+
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "newapi-announcement-generator:v2";
+  const LEGACY_STORAGE_KEY = "newapi-announcement-generator:v1";
+  const AI_SETTINGS_KEY = "newapi-announcement-generator:ai:v1";
+
+  const DEFAULT_STORY = () => ({
+    title: "",
+    subtitle: "",
+    time: "",
+    format: "markdown", // markdown | html
+    summary: "",
+    body: "",
+  });
+
+  const DEFAULT_STATE = {
+    type: "濠电偛鐡ㄧ猾鍌炲礃閳哄倸鍓梻浣告惈濞层倝鎮洪妸鈺佽摕?,
+    date: "",
+    dept: "",
+    severity: "濠?,
+    version: "",
+    issue: "",
+    tags: "",
+    highlights: "",
+    schedule: "",
+    stories: [DEFAULT_STORY()],
+    optA4: false,
+    optDropcap: true,
+    optWatermark: false,
+    columns: "2",
+    accent: "#EC4899",
+  };
+
+  const SAMPLE_STATE = {
+    type: "濠电偛鐡ㄧ猾鍌炲礃閳哄倸鍓梻浣告惈濞层倝鎮洪妸鈺佽摕?,
+    date: new Date().toISOString().slice(0, 10),
+    dept: "婵°倗濮烽崑娑㈠疮閼愁垬浜归柟缁㈠枟閸庢﹢鏌￠崒姘变虎缂?,
+    severity: "濠?,
+    version: "v3.2.0",
+    issue: "No. 024",
+    tags: "API, 闂備礁鎲￠悷锕傚垂閻㈢數鍗? 闂備礁鎲￠悷顖炲垂閻㈤潻缍栭柛銉亹閸︻厸鍋撻敐搴′簮闁?,
+    highlights: "- 闂備礁鎼崐鐟邦熆濮椻偓璺柛鎰靛枟閺咁剚鎱ㄥΟ澶稿惈闁糕晝濮撮埥澶愬箻椤栨矮澹曢梻鍌欑劍鐎笛囨偡閵娾晩鏁嬮柕鍫濐槹閸庢ê霉閿濆妫戦柣鐔村灲閺屾稑鈻庡Ο铏逛淮濡炪倖娲戦崡鎶界嵁閹捐绠涙い鏃囨〃缁がn- 濠电偞娼欓崥瀣晪闁诲骸鐏氶悡锟犲极瀹ュ拋娼?5 闁诲海鍋ｉ崐鏍磿閼测晜宕叉繝濠傚閳绘棃鎮楅敐搴℃灍妞ゅ孩鐗滅槐?18%\n- 闂備礁鎼崐鐟邦熆濮椻偓璺柛鎰靛枟閺咁剚鎱ㄥΟ璇插闁搞倗鍋為幈銊╂偡閺夊簱鍋撻崸妤€绠洪柤娴嬫櫆瀹?Trace-ID",
+    schedule: "2026-03-18 23:00 闁诲孩顔栭崰鎺楀磻閹炬枼鏀芥い鏃傗拡閸庢垵霉閻撳孩顥為柟顖涙閵嗗懏绌?026-03-19 00:30 闂備胶顭堢换鍫ュ礉閹达箑闂柧蹇撳帨閸嬫捇鎮烽悧鍫熸嫳闂佹悶鍔嶉悺顡?026-03-19 02:00 闂備胶鍎甸弲婊堝垂閸撲焦鏆滈柛鎾茬劍閸犲棝鏌涚仦鐐殤婵＄虎浜炵槐鎾存媴鐟欏嫬闉嶅┑?,
+    stories: [
+      {
+        title: "newapi v3.2.0 婵犳鍠楃换鎰緤閻ｅ本顫曢柨鐔哄Т閻鏌熺€涙绠樻い?,
+        subtitle: "闂備礁鎼ú锕€顭囧▎鎾崇闁冲搫鎳庤繚婵炶揪缍€椤鐥婊呯＜閻庯綆鍓欐禒娲煃瑜滈崗娑㈡倿閿曗偓鐓ら柟绋挎捣闂勫嫰鏌﹀Ο渚Ш闁哄棙婢橀湁闁挎繂鎳愯ⅹ闂?,
+        time: "2026-03-19 00:30",
+        format: "markdown",
+        summary:
+          "闂備礁鎼悧婊堝礈濮橀鏁冨┑鍌滎焾閻鏌熺€涙绠樻い蹇旀尦閺屻倖娼忛妸锔炬闂佸憡鏌ㄧ粔鍓佸垝濞嗘挸绀冮柤纰卞墯濮ｅ酣姊虹拠鈥冲姱闁稿本绮庨幉鍧楁⒑閸涘﹦鎳愰柛銊ф暬閿濈偤宕堕‖鈥虫贡閳ь剨缍嗛崑鈧柛瀣崄椤у倻绱掓潏銊ヮ棆缂佽鲸甯￠幃銏ゅ礈娓氬洣绱橀梻鍌欑劍鐎笛囨偡閵娾晩鏁嬮柕鍫濐槹閸庢ê霉閿濆妫戠紒澶庡亹缁辨帡顢涘▎鎴滆缂備浇椴哥换鍫ユ偘椤曗偓楠炲棝宕楅銏╂Ч妞ゎ剙娲獮鍥偋閸喎娈ら梺鑽ゅС鐠€锕傚垂閻㈢绠柣鎴犳櫕閸欐帗銇勮箛鎾斥偓鐢稿磻閹惧鈹嶉柟鐓庛€€n闂備浇顕х换鎴濐熆濡皷鍋撶憴鍕枙鐎殿喚鏁婚幃銏ゅ礂绾鍚归梺鑽ゅТ濞层倝宕查弻銉﹀仼妞ゆ帒瀚粻锝夋煙闁箑澧紒鈧埀顒勬偡濠婂懎顣奸悽顖ょ節閹澘鈻庨幋鐐茬彴婵炴挻鑹鹃敃锔剧矆婢跺娈介柣鎰煐绾墽鈧鍠涙慨銈夋晬?Trace-ID闂?,
+        body:
+          "## 闂備礁鎲￠悷锕佹懌濠电偞褰冨鈥崇暦濮椻偓瀹曘劑顢樿閺咁枹n- 缂傚倸鍊烽懗鍫曞窗瀹ュ洨鍗氶柟缁㈠枟閻撱儲绻涢崱妯轰刊闁搞倖鐗犻弻锝夘敊閼姐倗鐡樼紓浣稿綁閸楀啿鐣烽妷銉ф殕闁逞屽墰閹噣顢曢敂鐣屽弳濠电偛妫欑敮鈺呭吹閺嶎厽鐓曢柨鏂挎惈婵¤櫣绱掑Δ鈧ˇ闈涚暦閵壯傛勃闁诡垎鍐炬Щ闂備礁鎲￠悷杈╃礊閳ь剛绱掔紒妯虹伌鐎规洖鐖奸幃娆撳箥椤曞懍绱橀梻浣搞偢椤ユ捇鍩涘畡? Trace-ID闂備焦瀵х粙鎺斿枈瀹ュ鍎婇柍銉︽灱閺嬪酣姊介崶顒夋晪妞ゆ巻鍋撻弫鍫ユ煕鐏炲墽绠樼紒鐘崇叀閺?`x-newapi-trace-id`\n\n> 闂備礁婀辩划顖炲礉濞嗘挸鐤悗锝庡枟閺咁剚鎱ㄥ鍡楀⒒婵炲眰鍊曢妴鎺戭潩椤撶姷鐣剧紓浣稿€稿Λ婵嗩嚕椤旀妯勯梺杞扮閿曪箓骞忛悩娲绘晬婵炴垶鐟ч埀顒夊枟娣囧﹤螖閳ь剟鎮ч崱妯碱浄婵炴垯鍨圭粈鍡涙煏閸繃顥為柣鎺嶇矙閺屻劌鈽夊Ο鑲╁姰濡炪倖娲﹂崜姘焽缂佹ɑ濯撮柣鈺傚坊閺呯姴鐣峰顓烆嚤閻庢稒蓱濞呮捇鏌ｉ悩鍙夌ォ闁搞劍濞婇幃銉ヮ煥閸惊銉デ庨崶銊﹀€n## 闂備礁鎲￠〃鍛洪妸锔绘闁搞儺鍓欑粻浼存煕閵夋垵鎳愰埞娌憂1. 闂備礁鎲￠〃鍛洪妸锔绘?SDK\n2. 闂備焦鎮堕崕鎶藉磻濞戞氨绀婂┑鐘插枤濞堢晫鈧厜鍋撻柛鎰典簼椤秹姊虹粙璺ㄧ濠电偛锕顐︻敇閵忥紕鍙勯梺纭咁潐閸旀鎮㈤崠绯?. 闂佽崵鍠愰悷銉╁磹閹间焦鍎岄柛宀€鍋為崕搴ㄦ煙鐎电浠滃ù鐘成戦〃銉╂倷閼哥數銆愰悗娈垮枦婵倝鏁?,
+      },
+      {
+        title: "闂備胶顭堢换鎺楀储瑜旈、娆撳箛閺夎法鐣遍悷婊冪灱缁厼鐣濋崟顐ゅ€為梺缁樺姇椤曨厼鈻?,
+        subtitle: "闂佽崵濮崇拋鏌ュ疾濞戞鏆︾€光偓閳ь剟鎯€椤忓浂妲煎┑鐐村絻濞尖€崇暦閿濆鏁嶆繛鎴灻肩划顖炴⒑?,
+        time: "",
+        format: "markdown",
+        summary: "闁诲海鍋ｉ崐婵堢磽濮橀鏁婇柛娑欐綑缁€鍌炴煕椤愵偅绶氱紒杈殜楠?10% 婵犵數鍋熺换婵堟濮樿泛闂繛宸簼閺咁剛鈧厜鍋撻柛鎰亾缂嶅棝鏌?2 闂佽绻愮换鎰崲閹存繍娓婚柛宀€鍋涚憴锕傚箹缁厜鍋撻搹顐ｇ彃闂備胶顭堢换鍫ュ礉閹达箑闂繛宸簻杩?,
+        body:
+          "- 闂備礁鎼崬鏌ュ川椤撗勬瘔 SDK闂備焦瀵х粙鎺楁儗椤旂偓宕叉慨妯挎硾缁犳澘霉閿濆浂鐒鹃柟顔藉灴閹宕烽鐕佷户缂備浇椴哥换鍐箯閸涙潙骞㈡俊銈呭暟婢跺嫰鏌ｉ悩杈╄窗闁哥姵鐗曢悾宄扮暆閳ь剟鎯€椤忓牃鈧棃銆? 闂備胶鍘ч〃搴㈢濠婂懐纾介柟鎯у绾鹃箖鏌熺€涙绠撶憸鎵█閺屻劌鈽夊▎鎰闂佺偨鍎茶摫缂佸苯宕埞鎴犫偓锛卞啩澹曢棅顐㈡搐濞寸兘鎮?`x-newapi-trace-id`\n- 闁诲孩顔栭崰鏍磹閹间焦鍋夐柛顐ｆ礀缁秹鎮规担鍛婅础缂佹劖顨婇弻娑㈠Ψ瑜嶆禒锔剧磼椤旇姤灏﹂柟铏洴瀹曟宕ㄩ婊勫暟濠电偞鍨堕幐鎾磻閹惧墎纾奸悗锝庝簻閺嗛亶鏌ｉ敐澶岀暫闁诡啫鍥ч唶闁绘柨鎲＄€?,
+      },
+    ],
+    optA4: false,
+    optDropcap: true,
+    optWatermark: false,
+    columns: "2",
+    accent: "#EC4899",
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  // DOM refs are resolved lazily inside `wire()` so the app still works even if
+  // this script is loaded without `defer` / before the DOM exists.
+  let statusEl = null;
+  let previewEl = null;
+  let previewMetaEl = null;
+  let previewUiEls = {};
+
+  let previewMode = "preview";
+  let lastRenderedState = null;
+  let formEls = {};
+  let actionEls = {};
+  let aiEls = {};
+  let actionModalEls = {};
+  let copyModalEls = {};
+
+  let onActionModalSelect = null;
+
+  const resolveDomRefs = () => {
+    statusEl = $("status");
+    previewEl = $("preview");
+    previewMetaEl = $("previewMeta");
+
+    previewUiEls = {
+      tabPreview: $("tabPreview"),
+      tabCode: $("tabCode"),
+      previewPane: $("previewPane"),
+      codePane: $("codePane"),
+      code: $("previewCode"),
+    };
+    formEls = {
+      type: $("type"),
+      date: $("date"),
+      dept: $("dept"),
+      severity: $("severity"),
+      version: $("version"),
+      issue: $("issue"),
+      tags: $("tags"),
+      highlights: $("highlights"),
+      schedule: $("schedule"),
+      optA4: $("optA4"),
+      optDropcap: $("optDropcap"),
+      optWatermark: $("optWatermark"),
+      columns: $("columns"),
+      accent: $("accent"),
+      stories: $("stories"),
+    };
+
+    actionEls = {
+      sample: $("btnSample"),
+      reset: $("btnReset"),
+      import: $("btnImport"),
+      importFile: $("fileImport"),
+      copy: $("btnCopy"),
+      export: $("btnExport"),
+      print: $("btnPrint"),
+      addStory: $("btnAddStory"),
+      aiGenerate: $("btnAiGenerate"),
+    };
+
+    aiEls = {
+      prompt: $("aiPrompt"),
+      count: $("aiCount"),
+      baseUrl: $("aiBaseUrl"),
+      model: $("aiModel"),
+      apiKey: $("aiApiKey"),
+      remember: $("aiRemember"),
+    };
+    actionModalEls = {
+      root: $("actionModal"),
+      title: $("actionModalTitle"),
+      options: $("actionModalOptions"),
+      close: $("btnActionModalClose"),
+    };
+
+    copyModalEls = {
+      root: $("copyModal"),
+      title: $("copyModalTitle"),
+      text: $("copyModalText"),
+      close: $("btnCopyModalClose"),
+      select: $("btnCopyModalSelect"),
+      copy: $("btnCopyModalCopy"),
+    };
+  };
+
+  const todayISO = () => new Date().toISOString().slice(0, 10);
+
+  let statusTimer = null;
+  const flashStatus = (message, ms = 1800) => {
+    if (!statusEl) return;
+    if (statusTimer) window.clearTimeout(statusTimer);
+    statusEl.textContent = message || "";
+    if (!message) return;
+    statusTimer = window.setTimeout(() => {
+      statusEl.textContent = "";
+    }, ms);
+  };
+
+  const eventTargetElement = (event) => {
+    const target = event ? event.target : null;
+    if (target instanceof Element) return target;
+    if (target && typeof target === "object" && "parentElement" in target) {
+      const parent = target.parentElement;
+      if (parent instanceof Element) return parent;
+    }
+    return null;
+  };
+
+  const safeStorage = {
+    get(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        // ignore
+      }
+    },
+    clear(key) {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        // ignore
+      }
+    },
+  };
+
+  const normalizeHexColor = (value, fallback) => {
+    const v = String(value || "").trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(v)) return v;
+    return fallback;
+  };
+
+  const normalizeStory = (raw) => {
+    const r = raw && typeof raw === "object" ? raw : {};
+    const format = String(r.format || "markdown").trim().toLowerCase();
+    return {
+      title: String(r.title || "").trim(),
+      subtitle: String(r.subtitle || "").trim(),
+      time: String(r.time || "").trim(),
+      format: format === "html" ? "html" : "markdown",
+      summary: String(r.summary || "").replace(/\r\n/g, "\n").trim(),
+      body: String(r.body || "").replace(/\r\n/g, "\n").trim(),
+    };
+  };
+
+  const migrateLegacyState = (raw) => {
+    const r = raw && typeof raw === "object" ? raw : {};
+
+    if (Array.isArray(r.stories)) return r;
+
+    const legacyTitle = String(r.title || "").trim();
+    const legacySubtitle = String(r.subtitle || "").trim();
+    const legacySummary = String(r.summary || "").replace(/\r\n/g, "\n").trim();
+    const legacyBody = String(r.body || "").replace(/\r\n/g, "\n").trim();
+
+    return {
+      ...r,
+      stories: [
+        {
+          ...DEFAULT_STORY(),
+          title: legacyTitle,
+          subtitle: legacySubtitle,
+          summary: legacySummary,
+          body: legacyBody,
+        },
+      ],
+    };
+  };
+
+  const normalizeState = (raw) => {
+    const migrated = migrateLegacyState(raw);
+    const r = migrated && typeof migrated === "object" ? migrated : {};
+
+    const date = String(r.date || "").trim() || todayISO();
+    const columns = String(r.columns || "2").trim();
+
+    const storiesRaw = Array.isArray(r.stories) ? r.stories : [];
+    const stories = storiesRaw.map(normalizeStory).filter((s) => s.title || s.subtitle || s.summary || s.body);
+
+    return {
+      ...DEFAULT_STATE,
+      ...r,
+      date,
+      columns: ["1", "2", "3"].includes(columns) ? columns : "2",
+      accent: normalizeHexColor(r.accent, DEFAULT_STATE.accent),
+      optA4: Boolean(r.optA4),
+      optDropcap: r.optDropcap !== false,
+      optWatermark: Boolean(r.optWatermark),
+      stories: stories.length ? stories : [DEFAULT_STORY()],
+    };
+  };
+
+  const applyStaticFieldsToForm = (state) => {
+    if (!formEls.type) return;
+
+    const s = normalizeState(state);
+
+    formEls.type.value = s.type;
+    formEls.date.value = s.date;
+    formEls.dept.value = s.dept;
+    formEls.severity.value = s.severity;
+    formEls.version.value = s.version;
+    formEls.issue.value = s.issue;
+    formEls.tags.value = s.tags;
+    formEls.highlights.value = s.highlights;
+    formEls.schedule.value = s.schedule;
+    formEls.optA4.checked = s.optA4;
+    formEls.optDropcap.checked = s.optDropcap;
+    formEls.optWatermark.checked = s.optWatermark;
+    formEls.columns.value = s.columns;
+    formEls.accent.value = s.accent;
+  };
+
+  const escapeHtml = (value) => {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  };
+
+  const renderStoryCard = (story, idx, total) => {
+    const s = normalizeStory(story);
+
+    const safeTitle = s.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎卞Λ娑㈠垂閻撳宫?;
+    const indexText = `#${idx + 1}${idx === 0 ? " 闁?濠电姰鍨煎▔娑㈡偤閵娿儺鐒? : ""}`;
+
+    const idTitle = `story-${idx}-title`;
+    const idSubtitle = `story-${idx}-subtitle`;
+    const idTime = `story-${idx}-time`;
+    const idFormat = `story-${idx}-format`;
+    const idSummary = `story-${idx}-summary`;
+    const idBody = `story-${idx}-body`;
+
+    const disableUp = idx === 0;
+    const disableDown = idx === total - 1;
+    const disableDelete = total <= 1;
+
+    const out = `
+      <details class="story-card" data-index="${idx}" ${idx === 0 ? "open" : ""}>
+        <summary>
+          <div class="story-summary-left">
+            <span class="story-index">${escapeHtml(indexText)}</span>
+            <span class="story-summary-title" data-role="story-title">${escapeHtml(safeTitle)}</span>
+          </div>
+          <div class="story-controls" aria-label="闂備礁鎼¨鈧紒杈ㄦ礀鐓ゅù鍏兼綑缁犺偐鈧箍鍎辩€氼喚绮?>
+            <button class="btn btn-ghost btn-mini" type="button" data-action="up" ${disableUp ? "disabled" : ""}>
+              濠电偞鍨堕幐鎼佹晝閿旇法鏄?
+            </button>
+            <button class="btn btn-ghost btn-mini" type="button" data-action="down" ${disableDown ? "disabled" : ""}>
+              濠电偞鍨堕幐鎼侇敄閸ワ妇鏄?
+            </button>
+            <button class="btn btn-ghost btn-mini" type="button" data-action="dup">濠电姰鍨煎▔娑氱矓閹绢喖鏄?/button>
+            <button class="btn btn-mini btn-danger" type="button" data-action="del" ${disableDelete ? "disabled" : ""}>
+              闂備礁鎲＄敮鐐寸箾閳ь剚绻?
+            </button>
+          </div>
+        </summary>
+
+        <div class="story-body">
+          <div class="grid-2">
+            <div class="field">
+              <label for="${escapeHtml(idTitle)}">闂備礁鎼粔鏉懨洪顫偓?/label>
+              <input
+                id="${escapeHtml(idTitle)}"
+                class="input"
+                data-field="title"
+                maxlength="90"
+                value="${escapeHtml(s.title)}"
+                placeholder="濠电偞鎸婚懝楣冾敄閸涙番鈧懓顦归柡浣哥Т椤繈顢曢妶鍥ㄥ枓闂備礁鎽滈崕鎰板窗閺嵮呮殾闁绘顕ч崹鍌炴煕閹扳晛濡界紒銊ｅ灪娣囧﹪顢涘璇蹭壕鐎规洖娲犻崑?
+              />
+            </div>
+            <div class="field">
+              <label for="${escapeHtml(idSubtitle)}">闂備礁鎲￠幖鈺呭垂闁秵鍋夐柨婵嗘４缁憋絾鎱ㄥΔ鈧悧蹇曠矆閸曨垱鐓曟繛鍡樏悘锕傛煃瑜滈崜娆撀ㄩ埀顒傜磼?/label>
+              <input
+                id="${escapeHtml(idSubtitle)}"
+                class="input"
+                data-field="subtitle"
+                maxlength="120"
+                value="${escapeHtml(s.subtitle)}"
+                placeholder="濠电偞鍨堕幐鎾磻閹剧粯鐓曟繛鍡楃Т閸斻儵鏌ｉ敂鐐珪闁归濮烽埀顒佺⊕钃辨い顐ｇ墵濮婃椽骞撻幒鏂濄倝鏌?
+              />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="${escapeHtml(idTime)}">闂備礁鎼崯顐︽偉閻撳宫娑㈠锤濡や焦娅栭梺鍓插亝缁诲倻鎷嬮弻銉︹拺妞ゆ劑鍩勫褏绱?/label>
+              <input
+                id="${escapeHtml(idTime)}"
+                class="input"
+                data-field="time"
+                maxlength="40"
+                value="${escapeHtml(s.time)}"
+                placeholder="濠电偞鎸婚懝楣冾敄閸涙番鈧懓顦归柡?026-03-14 21:00"
+              />
+            </div>
+            <div class="field">
+              <label for="${escapeHtml(idFormat)}">婵犳鍠楃换鎰緤妤ｅ啫鍑犻柛鎰靛枛閸愨偓闂佺粯鎸稿ù椋庢兜閳?/label>
+              <select id="${escapeHtml(idFormat)}" class="input" data-field="format">
+                <option value="markdown" ${s.format === "markdown" ? "selected" : ""}>Markdown</option>
+                <option value="html" ${s.format === "html" ? "selected" : ""}>HTML闂備焦瀵х粙鎴︽偋閸涱垱顫曢柣妤€鐗婃禍銈夋煕閵夛絽濡藉┑顔哄灲閺屾稑螖閸涱剚鍠氬┑鐐叉噺閹瑰洤顕ｆ禒瀣倞闁冲搫锕ゆ慨浼存⒑?/option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="${escapeHtml(idSummary)}">闂佽绨肩徊缁樼珶閸儺鏁?闂備胶顢婃慨銈夆€﹂崼銉ｂ偓鍛存晝閸屾稒娅栭梺鍓插亝缁诲倻鎷嬮弻銉︹拺妞ゆ劑鍩勫褏绱?/label>
+            <textarea
+              id="${escapeHtml(idSummary)}"
+              class="input textarea"
+              data-field="summary"
+              rows="3"
+              placeholder="2~4 闂備礁鎲￠悷锝夊磿閹绢噮鏁婂璺侯焾閳ь剚甯″畷銊╊敋閸涱噮鍟€闂備焦瀵х粙鎺楁嚌閻愵剛顩锋繛鎴炵懅椤╂煡鏌涢埄鍐╃闁活厼妫楅埥澶愬棘鐠恒劌顣堕梺閫炲苯鍘告俊鐐村笧閹峰綊鎮㈤崫銉祫闂侀€炲苯澧紒瀣躬瀹曠厧鈽夐幒鎴滃婵炶揪绲块…鍫ャ€冨☉銏＄厱婵犻潧妫涜ⅹ闂侀€炲苯鍘哥紒鑸佃壘閵嗘帡宕滄担鐟版毇婵炶揪缍侀弲鑼垝闂堟耽褰掓偐椤愵澀澹曞┑?
+            >${escapeHtml(s.summary)}</textarea>
+          </div>
+
+          <div class="field">
+            <label for="${escapeHtml(idBody)}">婵犳鍠楃换鎰緤妤ｅ啫鍑?/label>
+            <textarea
+              id="${escapeHtml(idBody)}"
+              class="input textarea"
+              data-field="body"
+              rows="10"
+              placeholder="闂備浇銆€閸嬫挻銇勯弽銊р槈闁伙富鍠氱槐鎺楁偐椤愵澀澹曢梻?Markdown闂備焦瀵х粙鎴︽偋婵犲洤鍨傞柕濞炬櫅缁€鍡涙煕閵夛絽濡奸幖鏉戯工閳?HTML 婵犵妲呴崹顏堝焵椤掆偓绾绢厾娑甸埀顒勬⒑?
+            >${escapeHtml(s.body)}</textarea>
+          </div>
+        </div>
+      </details>
+    `;
+    return out;
+  };
+
+  const renderStoriesEditor = (stories) => {
+    const list = Array.isArray(stories) ? stories : [];
+    return list.map((s, idx) => renderStoryCard(s, idx, list.length)).join("").trim();
+  };
+
+  const applyStoriesToForm = (stories) => {
+    if (!formEls.stories) return;
+    const list = Array.isArray(stories) ? stories : [DEFAULT_STORY()];
+    formEls.stories.innerHTML = renderStoriesEditor(list);
+  };
+
+  const applyStateToForm = (state) => {
+    const s = normalizeState(state);
+    applyStaticFieldsToForm(s);
+    applyStoriesToForm(s.stories);
+  };
+
+  const readStoriesFromForm = () => {
+    if (!formEls.stories) return [DEFAULT_STORY()];
+
+    const cards = Array.from(formEls.stories.querySelectorAll("details.story-card"));
+    const stories = cards.map((card) => {
+      const getValue = (field) => {
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (!el) return "";
+        return "value" in el ? el.value : "";
+      };
+
+      return normalizeStory({
+        title: getValue("title"),
+        subtitle: getValue("subtitle"),
+        time: getValue("time"),
+        format: getValue("format"),
+        summary: getValue("summary"),
+        body: getValue("body"),
+      });
+    });
+
+    return stories.length ? stories : [DEFAULT_STORY()];
+  };
+
+  const readFormState = () => {
+    if (!formEls.type) return normalizeState(DEFAULT_STATE);
+
+    return normalizeState({
+      type: formEls.type.value,
+      date: formEls.date.value,
+      dept: formEls.dept.value.trim(),
+      severity: formEls.severity.value,
+      version: formEls.version.value.trim(),
+      issue: formEls.issue.value.trim(),
+      tags: formEls.tags.value.trim(),
+      highlights: formEls.highlights.value.replace(/\r\n/g, "\n").trim(),
+      schedule: formEls.schedule.value.replace(/\r\n/g, "\n").trim(),
+      stories: readStoriesFromForm(),
+      optA4: formEls.optA4.checked,
+      optDropcap: formEls.optDropcap.checked,
+      optWatermark: formEls.optWatermark.checked,
+      columns: formEls.columns.value,
+      accent: formEls.accent.value,
+    });
+  };
+
+  const parseLines = (value, maxItems = 10) => {
+    return String(value || "")
+      .replace(/\r\n/g, "\n")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.replace(/^[-*闂備胶鍋ㄩ崕娲疾濠曟姱+/, ""))
+      .slice(0, maxItems);
+  };
+
+  const parseTags = (value, maxItems = 10) => {
+    return String(value || "")
+      .replace(/闂?g, ",")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .slice(0, maxItems);
+  };
+
+  const formatDate = (isoDate) => {
+    const v = String(isoDate || "").trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return "";
+    const [y, m, d] = v.split("-");
+    return `${y}.${m}.${d}`;
+  };
+
+  const renderInline = (raw) => {
+    const input = String(raw || "");
+
+    const codeSpans = [];
+    const withCodePlaceholders = input.replace(/`([^`]+)`/g, (_, code) => {
+      const idx = codeSpans.length;
+      codeSpans.push(code);
+      return `\u0000CODE${idx}\u0000`;
+    });
+
+    let out = escapeHtml(withCodePlaceholders);
+
+    out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+    out = out.replace(/\u0000CODE(\d+)\u0000/g, (_, idxRaw) => {
+      const idx = Number(idxRaw);
+      const code = codeSpans[idx] ?? "";
+      return `<code>${escapeHtml(code)}</code>`;
+    });
+
+    return out;
+  };
+
+  const renderMarkdown = (markdown) => {
+    const lines = String(markdown || "").replace(/\r\n/g, "\n").split("\n");
+
+    const blocks = [];
+    const isRule = (line) => /^-{3,}$/.test(line.trim());
+    const isHeading = (line) => /^#{1,3}\s+/.test(line.trim());
+    const isQuote = (line) => /^>\s+/.test(line.trim());
+    const isList = (line) => /^-\s+/.test(line.trim());
+
+    let i = 0;
+    while (i < lines.length) {
+      const raw = lines[i];
+      const line = raw.trimEnd();
+      const trimmed = line.trim();
+
+      if (!trimmed) {
+        i += 1;
+        continue;
+      }
+
+      if (isRule(trimmed)) {
+        blocks.push({ type: "hr" });
+        i += 1;
+        continue;
+      }
+
+      if (isHeading(trimmed)) {
+        const text = trimmed.replace(/^#{1,3}\s+/, "");
+        blocks.push({ type: "h2", text });
+        i += 1;
+        continue;
+      }
+
+      if (isQuote(trimmed)) {
+        const quoteLines = [];
+        while (i < lines.length && isQuote(lines[i].trim())) {
+          quoteLines.push(lines[i].trim().replace(/^>\s+/, ""));
+          i += 1;
+        }
+        blocks.push({ type: "quote", text: quoteLines.join("\n") });
+        continue;
+      }
+
+      if (isList(trimmed)) {
+        const items = [];
+        while (i < lines.length && isList(lines[i].trim())) {
+          items.push(lines[i].trim().replace(/^-\s+/, ""));
+          i += 1;
+        }
+        blocks.push({ type: "ul", items });
+        continue;
+      }
+
+      const paraLines = [];
+      while (i < lines.length) {
+        const current = lines[i].trimEnd();
+        const t = current.trim();
+        if (!t) break;
+        if (isRule(t) || isHeading(t) || isQuote(t) || isList(t)) break;
+        paraLines.push(current);
+        i += 1;
+      }
+      blocks.push({ type: "p", text: paraLines.join("\n") });
+    }
+
+    const rendered = blocks
+      .map((b) => {
+        if (b.type === "hr") return "<hr />";
+        if (b.type === "h2") return `<h2>${renderInline(b.text)}</h2>`;
+        if (b.type === "quote") {
+          const html = b.text
+            .split("\n")
+            .map((l) => renderInline(l))
+            .join("<br />");
+          return `<blockquote>${html}</blockquote>`;
+        }
+        if (b.type === "ul") {
+          const items = b.items.map((it) => `<li>${renderInline(it)}</li>`).join("");
+          return `<ul>${items}</ul>`;
+        }
+
+        const paragraphs = String(b.text || "")
+          .split(/\n\s*\n/)
+          .map((p) => p.trim())
+          .filter(Boolean)
+          .map((p) => `<p>${p.split("\n").map((l) => renderInline(l)).join("<br />")}</p>`)
+          .join("");
+        return paragraphs;
+      })
+      .join("");
+
+    return rendered;
+  };
+
+  const sanitizeUrl = (raw) => {
+    const value = String(raw || "").trim();
+    if (!value) return "";
+    try {
+      const url = new URL(value, window.location.origin);
+      if (["http:", "https:", "mailto:"].includes(url.protocol)) return url.toString();
+      return "";
+    } catch {
+      return "";
+    }
+  };
+
+  const sanitizeHtml = (raw) => {
+    const template = document.createElement("template");
+    template.innerHTML = String(raw || "");
+
+    const allowedTags = new Set([
+      "p",
+      "br",
+      "strong",
+      "em",
+      "code",
+      "pre",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "h2",
+      "h3",
+      "hr",
+      "a",
+    ]);
+
+    const blockedTags = new Set(["script", "style", "iframe", "object", "embed", "link", "meta"]);
+
+    const allowedAttrsByTag = {
+      a: new Set(["href", "title", "target", "rel"]),
+    };
+
+    const sanitizeNode = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return document.createTextNode(node.textContent || "");
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+      const tag = node.tagName.toLowerCase();
+      if (blockedTags.has(tag)) return null;
+
+      if (!allowedTags.has(tag)) {
+        const frag = document.createDocumentFragment();
+        Array.from(node.childNodes).forEach((child) => {
+          const clean = sanitizeNode(child);
+          if (clean) frag.appendChild(clean);
+        });
+        return frag;
+      }
+
+      const el = document.createElement(tag);
+
+      const allowedAttrs = allowedAttrsByTag[tag] || new Set();
+      Array.from(node.attributes).forEach((attr) => {
+        const name = attr.name.toLowerCase();
+        if (name.startsWith("on")) return;
+        if (!allowedAttrs.has(name)) return;
+
+        if (tag === "a" && name === "href") {
+          const safe = sanitizeUrl(attr.value);
+          if (!safe) return;
+          el.setAttribute("href", safe);
+          return;
+        }
+
+        el.setAttribute(name, attr.value);
+      });
+
+      if (tag === "a") {
+        if (!el.getAttribute("href")) {
+          const frag = document.createDocumentFragment();
+          Array.from(node.childNodes).forEach((child) => {
+            const clean = sanitizeNode(child);
+            if (clean) frag.appendChild(clean);
+          });
+          return frag;
+        }
+        el.setAttribute("target", "_blank");
+        el.setAttribute("rel", "noopener noreferrer");
+      }
+
+      Array.from(node.childNodes).forEach((child) => {
+        const clean = sanitizeNode(child);
+        if (clean) el.appendChild(clean);
+      });
+
+      return el;
+    };
+
+    const container = document.createElement("div");
+    Array.from(template.content.childNodes).forEach((child) => {
+      const clean = sanitizeNode(child);
+      if (clean) container.appendChild(clean);
+    });
+
+    return container.innerHTML;
+  };
+
+  const tryExtractBodyFromHtmlDocument = (raw) => {
+    const text = String(raw || "").trim();
+    if (!text) return "";
+    if (!/<\s*(html|body)\b/i.test(text) && !/\b<!doctype\b/i.test(text)) return text;
+
+    try {
+      const doc = new DOMParser().parseFromString(text, "text/html");
+
+      const articleBody = doc.querySelector(".article-body");
+      if (articleBody) return articleBody.innerHTML;
+
+      const news = doc.querySelector(".news");
+      if (news) return news.outerHTML;
+
+      return text;
+    } catch {
+      return text;
+    }
+  };
+
+  const renderStoryContent = (story) => {
+    const s = normalizeStory(story);
+    const joined = [s.summary, s.body].filter(Boolean).join("\n\n");
+    if (!joined.trim()) return '<p class="muted">闂備焦瀵х粙鎴︽偋婵犲倵鏋旈煫鍥ㄧ☉缁秹鏌ｅΟ璇插闁告柡鍋撻梻浣告惈閸婄霉閸曨厽顫?/p>';
+
+    const looksLikeHtmlDoc = /\b<!doctype\b/i.test(joined) || /<\s*(html|body)\b/i.test(joined);
+
+    if (s.format === "html" || looksLikeHtmlDoc) {
+      const extracted = tryExtractBodyFromHtmlDocument(joined);
+      const sanitized = sanitizeHtml(extracted);
+      return sanitized || '<p class="muted">闂備焦瀵х粙鎴濓耿濮濆硞L 闂備礁鎲￠崝鏇㈠箠鎼搭煈鏁婇柟閭﹀幘閳绘棃鏌ц箛鎾冲辅闁轰礁瀚伴弻鐔衡偓娑欘焽婢ц櫕銇勯顒勬婵炵厧顭峰畷鍫曞Ω閿曗偓琚橀梻?/p>';
+    }
+
+    return renderMarkdown(joined);
+  };
+
+  const estimateReading = (state) => {
+    const s = normalizeState(state);
+    const raw = [
+      s.type,
+      s.dept,
+      s.version,
+      s.issue,
+      s.tags,
+      s.highlights,
+      s.schedule,
+      ...s.stories.map((x) => [x.title, x.subtitle, x.time, x.summary, x.body].join("\n")),
+    ].join("\n");
+
+    const count = raw.replace(/\s+/g, "").length;
+    const minutes = Math.max(1, Math.round(count / 500));
+    return { count, minutes };
+  };
+
+  const badgeForSeverity = (severity) => {
+    if (severity === "濠?) return '<span class="badge sev-high">濠?/span>';
+    if (severity === "濠?) return '<span class="badge sev-low">濠?/span>';
+    return '<span class="badge sev-mid">濠?/span>';
+  };
+
+  const renderCard = (title, innerHtml) => {
+    return `
+      <section class="card-callout">
+        <div class="card-title">${escapeHtml(title)}</div>
+        <div class="card-body">${innerHtml}</div>
+      </section>
+    `;
+  };
+
+  const renderAnnouncement = (state) => {
+    const s = normalizeState(state);
+
+    const dateText = formatDate(s.date);
+    const tags = parseTags(s.tags);
+    const highlightItems = parseLines(s.highlights, 10);
+    const scheduleItems = parseLines(s.schedule, 10);
+
+    const main = s.stories[0] ? normalizeStory(s.stories[0]) : normalizeStory(DEFAULT_STORY());
+    const mainTitle = main.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎遍幊搴ゃ亹閸℃稒鐓?;
+    const mainSubtitle = main.subtitle;
+    const mainTime = main.time;
+
+    const sidebarCards = [];
+
+    if (highlightItems.length) {
+      const list = `<ul>${highlightItems.map((x) => `<li>${renderInline(x)}</li>`).join("")}</ul>`;
+      sidebarCards.push(renderCard("濠电偛鐡ㄧ划鐘诲窗濮樿泛纾?, list));
+    }
+
+    if (scheduleItems.length) {
+      const list = `<ul>${scheduleItems.map((x) => `<li>${renderInline(x)}</li>`).join("")}</ul>`;
+      sidebarCards.push(renderCard("闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮?, list));
+    }
+
+    if (tags.length) {
+      const pills = `<div class="tag-list">${tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>`;
+      sidebarCards.push(renderCard("闂備礁鎼粔鏉懨洪妸鈺婃晢?, pills));
+    }
+
+    const emptySidebar = renderCard(
+      "闂備礁婀辩划顖炲礉濡ゅ懎桅?,
+      '<div class="card-text">濠电娀娼чˇ浠嬪磻閸曨垰鐤柟鎹愵嚙閻忚櫕绻濇繛鎯т壕闁诲骸鐏氱敮锟犲箖?/ 闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮?/ 闂備礁鎼粔鏉懨洪妸鈺婃晢闁绘垼妫勯悘铏節闂堟稒鍣界紒鎰殜閺屻倖绺芥径澶岀泿婵犳鍠掗弲鐘诲箖娴犲鍋勭紒瀣硶娴滐絾绻涢幘瀵告闁告洦鍘奸悞鎸庣箾閿濆懏绀岄柛鎾寸箖鐎靛ジ宕ㄩ弶鎳?/div>'
+    );
+
+    const dept = s.dept ? `<span class="issue-item">${escapeHtml(s.dept)}</span>` : "";
+    const issue = s.issue ? `<span class="issue-item">${escapeHtml(s.issue)}</span>` : "";
+    const version = s.version ? `<span class="issue-item">${escapeHtml(s.version)}</span>` : "";
+
+    const watermark = s.optWatermark
+      ? '<div class="watermark" aria-hidden="true">NEWAPI INTERNAL</div>'
+      : "";
+
+    const bodyParts = [];
+    bodyParts.push(renderStoryContent(main));
+
+    for (let i = 1; i < s.stories.length; i += 1) {
+      const story = normalizeStory(s.stories[i]);
+      if (!story.title && !story.subtitle && !story.summary && !story.body) continue;
+
+      bodyParts.push("<hr />");
+      bodyParts.push(`<h2 class="story-title">${escapeHtml(story.title || `闂備礁鎼¨鈧紒杈ㄦ礀鐓?${i + 1}`)}</h2>`);
+      if (story.subtitle) bodyParts.push(`<p class="story-deck">${escapeHtml(story.subtitle)}</p>`);
+      if (story.time) bodyParts.push(`<p class="story-meta">${escapeHtml(story.time)}</p>`);
+      bodyParts.push(renderStoryContent(story));
+    }
+
+    const bodyHtml = bodyParts.join("");
+
+    const deck = mainSubtitle ? `<p class="deck">${escapeHtml(mainSubtitle)}</p>` : "";
+    const headTime = mainTime ? `<div class="headline-meta">${escapeHtml(mainTime)}</div>` : "";
+
+    return `
+      <div class="news">
+        ${watermark}
+        <header class="masthead">
+          <div class="masthead-name">NEWAPI TIMES</div>
+          <div class="issue-line" role="group" aria-label="闂備礁鎲＄敮鎺楁晝閵堝桅闁哄啠鍋撶紒宀勪憾閸╁嫰宕樿缁€鈧?>
+            <div class="issue-left">
+              <span class="kicker">${escapeHtml(s.type)}</span>
+              ${dateText ? `<span class="issue-item">${escapeHtml(dateText)}</span>` : ""}
+              ${dept}
+            </div>
+            <div class="issue-right">
+              ${badgeForSeverity(s.severity)}
+              ${issue}
+              ${version}
+            </div>
+          </div>
+        </header>
+
+        <section class="headline-wrap" aria-label="闂備礁鎼粔鏉懨洪顫偓鍌涚鐎ｎ亞顦?>
+          <h1 class="headline">${escapeHtml(mainTitle)}</h1>
+          ${deck}
+          ${headTime}
+        </section>
+
+        <section class="content-grid" aria-label="婵犳鍠楃换鎰緤妤ｅ啫鍑犻柛鎰ㄦ櫇閳绘棃骞栫€涙绠栨繛鍛█閺?>
+          <article class="article" aria-label="婵犳鍠楃换鎰緤妤ｅ啫鍑?>
+            <div class="article-body">${bodyHtml}</div>
+          </article>
+
+          <aside class="sidebar" aria-label="濠电偞鎸婚惃婊堝礋椤撶偟鍔?>
+            ${(sidebarCards.length ? sidebarCards.join("") : emptySidebar).trim()}
+          </aside>
+        </section>
+
+        <footer class="paper-footer" aria-label="濠碉紕鍋戦崐鎾跺緤婵犳艾绀?>
+          <div>濠?${new Date().getFullYear()} newapi 闁?Bulletin</div>
+          <div class="footer-right">Generated by newapi</div>
+        </footer>
+      </div>
+    `;
+  };
+
+  const renderInlineHtmlCode = (state, { hasAnyContent } = {}) => {
+    const codeEl = previewUiEls.code;
+    if (!codeEl) return;
+
+    const s = normalizeState(state);
+    const hasContent =
+      typeof hasAnyContent === "boolean"
+        ? hasAnyContent
+        : s.stories.some((x) => x.title || x.subtitle || x.summary || x.body);
+
+    if (!hasContent) {
+      codeEl.textContent = "<!-- 濠靛鍋勯崯鎾愁啅閿旀寧娅犻柛鎰噹椤旀劙宕ユ惔顖滅閺夆晜鐟╅崳閿嬪濮樿鲸鏅搁柟?NewAPI HTML闁挎稑鐗嗛崬鎾嚂閺冣偓閻楀崬顕ｈ箛銉х -->";
+      return;
+    }
+
+    try {
+      codeEl.textContent = buildNewapiInlineHtml(s);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      codeEl.textContent = `<!-- HTML 闁汇垻鍠愰崹姘緞鏉堫偉袝闁?{msg} -->`;
+    }
+  };
+
+  const setPreviewMode = (mode, stateForCode = null) => {
+    const next = mode === "code" ? "code" : "preview";
+    previewMode = next;
+
+    const isCode = next === "code";
+
+    if (previewUiEls.previewPane) previewUiEls.previewPane.hidden = isCode;
+    if (previewUiEls.codePane) previewUiEls.codePane.hidden = !isCode;
+
+    if (previewUiEls.tabPreview) {
+      previewUiEls.tabPreview.classList.toggle("tab-active", !isCode);
+      previewUiEls.tabPreview.setAttribute("aria-selected", !isCode ? "true" : "false");
+    }
+
+    if (previewUiEls.tabCode) {
+      previewUiEls.tabCode.classList.toggle("tab-active", isCode);
+      previewUiEls.tabCode.setAttribute("aria-selected", isCode ? "true" : "false");
+    }
+
+    if (isCode) {
+      const s = stateForCode || lastRenderedState || readFormState();
+      renderInlineHtmlCode(s);
+    }
+  };
+  const render = (state, { persist } = { persist: true }) => {
+    const s = normalizeState(state);
+
+    lastRenderedState = s;
+
+    const hasAnyContent = s.stories.some((x) => x.title || x.subtitle || x.summary || x.body);
+
+    if (previewEl) {
+      previewEl.style.setProperty("--accent", s.accent);
+      previewEl.style.setProperty("--body-columns", s.columns);
+
+      previewEl.classList.toggle("paper-a4", s.optA4);
+      previewEl.classList.toggle("dropcap", s.optDropcap);
+
+      if (!hasAnyContent) {
+        previewEl.innerHTML = '<div class="paper-empty">濠电娀娼чˇ浠嬪磻閸曨垰鐤柟鐐墯閸熷懘鏌ㄩ弮鈧€笛冣枍閻樼粯鐓曢柟閭﹀墯閸ｈ銇勯弮鈧崝娆忕暦閵夛附鍎熸い鏍ㄧ矌椤︻噣鏌℃径鍡樻珕闁荤啿鏅犲畷鎶芥煥鐎ｎ亶鍤ゅ┑顔斤供閸撴盯寮舵禒瀣厸闁告劑鍔岄。鎶芥煛娴ｈ宕屾鐐差儔楠炲洭顢橀悙鎰尵缁辨帡鎮欓浣糕偓鎰亜閵夛附宕岀€规洘顨婇、妤呭焵椤掑嫬绠熼柨鐔哄Т杩?/div>';
+        if (previewMetaEl) previewMetaEl.textContent = "";
+      } else {
+        try {
+          previewEl.innerHTML = renderAnnouncement(s);
+          const { count, minutes } = estimateReading(s);
+          const dt = formatDate(s.date);
+          if (previewMetaEl)
+            previewMetaEl.textContent = `${dt ? dt + " 闁?" : ""}${count} 闂?闁?缂?${minutes} 闂備礁鎲＄敮鎺懳涘┑瀣闁瑰墽绮埛鎾绘煕濞戙垹浜伴柛銈庢櫌;
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          previewEl.innerHTML = `<div class="paper-empty">濠碘槅鍋呭妯尖偓姘煎灦閿濈偛顓奸崨顐熷亾閹烘鐭楀璺鸿嫰鐢剚绻濋姀鈥冲姸缂侇喖澧介幉鎾晝閸屾稒娅?{escapeHtml(msg)}</div>`;
+          if (previewMetaEl) previewMetaEl.textContent = "";
+        }
+      }
+    }
+    if (previewMode === "code") {
+      renderInlineHtmlCode(s, { hasAnyContent });
+    }
+
+    if (persist) safeStorage.set(STORAGE_KEY, s);
+  };
+
+  const renderFromFormSafe = ({ persist } = { persist: true }) => {
+    try {
+      render(readFormState(), { persist });
+      return true;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (previewEl) previewEl.innerHTML = `<div class="paper-empty">婵犵數鍋為幐绋款嚕閸洘鍋傞悗锝庡亜缁剁偤寮堕崼顐函鐞氭繈姊?{escapeHtml(msg)}</div>`;
+      if (previewMetaEl) previewMetaEl.textContent = "";
+      flashStatus(`婵犵數鍋為幐绋款嚕閸洘鍋傞悗锝庡亜缁剁偤寮堕崼顐函鐞氭繈姊?{msg}`, 3200);
+      return false;
+    }
+  };
+
+  const sanitizeFileName = (value) => {
+    const raw = String(value || "")
+      .replace(/[\\/:*?"<>|]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!raw) return "announcement";
+    return raw.slice(0, 60);
+  };
+
+  const downloadText = (filename, text, mime = "text/plain") => {
+    const withBom = `\ufeff${String(text || "")}`;
+    const blob = new Blob([withBom], { type: `${mime};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
+  const saveTextFile = async (filename, text, mime = "text/plain") => {
+    const name = String(filename || "download.txt");
+    const value = String(text || "");
+
+    const extMatch = name.match(/\.[a-z0-9]+$/i);
+    const ext = extMatch ? extMatch[0] : "";
+
+    if (typeof window.showSaveFilePicker === "function") {
+      try {
+        const types = mime && ext ? [{ description: ext.toUpperCase().slice(1), accept: { [mime]: [ext] } }] : [];
+
+        const handle = await window.showSaveFilePicker({
+          suggestedName: name,
+          types: types.length ? types : undefined,
+        });
+
+        const writable = await handle.createWritable();
+        const withBom = `\ufeff${value}`;
+        await writable.write(new Blob([withBom], { type: `${mime};charset=utf-8` }));
+        await writable.close();
+        return true;
+      } catch {
+        // fall back
+      }
+    }
+
+    try {
+      downloadText(name, value, mime);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const copyText = async (text) => {
+    const value = String(text || "");
+
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(value);
+        return true;
+      } catch {
+      }
+    }
+
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch {
+      return false;
+    }
+  };
+
+  const showActionModal = (title, options, onSelect) => {
+    const root = actionModalEls.root;
+    const listEl = actionModalEls.options;
+    const header = actionModalEls.title;
+    if (!root || !listEl || !header) return false;
+
+    header.textContent = String(title || "闂傚倷绶￠崑鍕囬幍顔瑰亾濮樸儱濮傛鐐寸懃椤撳ジ宕熼鐘灆");
+    onActionModalSelect = typeof onSelect === "function" ? onSelect : null;
+
+    const items = Array.isArray(options) ? options : [];
+
+    listEl.innerHTML = items
+      .map((opt) => {
+        const value = String(opt?.value || "");
+        const label = String(opt?.label || value || "闂傚倷绶￠崑鍕囬悽绋课?);
+        const desc = opt?.desc ? `<div class="action-option-desc">${escapeHtml(opt.desc)}</div>` : "";
+        const meta = escapeHtml(String(opt?.meta || "闂?));
+
+        return `
+          <button class="action-option" type="button" data-value="${escapeHtml(value)}" role="listitem">
+            <div>
+              <div class="action-option-title">${escapeHtml(label)}</div>
+              ${desc}
+            </div>
+            <div class="action-option-meta">${meta}</div>
+          </button>
+        `.trim();
+      })
+      .join("");
+
+    root.hidden = false;
+    return true;
+  };
+
+  const closeActionModal = () => {
+    if (!actionModalEls.root) return;
+    actionModalEls.root.hidden = true;
+    onActionModalSelect = null;
+  };
+
+  const showCopyModal = (title, text) => {
+    const root = copyModalEls.root;
+    const textarea = copyModalEls.text;
+    const header = copyModalEls.title;
+    if (!root || !textarea || !header) return false;
+
+    header.textContent = String(title || "闂備礁缍婂褔顢栭崨顔藉弿闁冲搫鍊哥欢鐐碘偓骞垮劚閹冲酣鎮?);
+    textarea.value = String(text || "");
+    root.hidden = false;
+
+    window.setTimeout(() => {
+      try {
+        textarea.focus();
+        textarea.select();
+      } catch {
+        // ignore
+      }
+    }, 0);
+
+    return true;
+  };
+
+  const showTextForManualCopy = (title, text) => {
+    if (showCopyModal(title, text)) return true;
+    try {
+      window.prompt(String(title || "闂備礁缍婂褔顢栭崨顔藉弿闁冲搫鍊哥欢鐐碘偓骞垮劚閹冲酣鎮?), String(text || ""));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const closeCopyModal = () => {
+    if (!copyModalEls.root) return;
+    copyModalEls.root.hidden = true;
+  };
+
+  const buildPlainText = (state) => {
+    const s = normalizeState(state);
+
+    const lines = [];
+    const dateText = s.date || todayISO();
+    const header = [
+      `闂?{s.type}闂?{dateText}`,
+      s.severity ? `闂傚倷鐒﹁ぐ鍐矓閻戝鈧懘鏁冮崒姘辩暠?${s.severity}` : "",
+      s.dept ? `闂傚倷绶￠崰鎾诲礉閹存惊?${s.dept}` : "",
+      s.version ? `闂備胶绮〃鍛存偋婵犲偊鑰?${s.version}` : "",
+      s.issue ? `闂備礁鎼悧蹇涘窗鎼淬們浜?${s.issue}` : "",
+    ]
+      .filter(Boolean)
+      .join(" 闁?");
+    lines.push(header);
+
+    if (s.tags.trim()) lines.push(`闂備礁鎼粔鏉懨洪妸鈺婃晢闁绘垼濮ら弲?{s.tags}`);
+    if (s.highlights.trim()) {
+      lines.push("\n濠电偛鐡ㄧ划鐘诲窗濮樿泛纾婚柨婵嗩槹閺?);
+      lines.push(s.highlights.trim());
+    }
+    if (s.schedule.trim()) {
+      lines.push("\n闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮介娑欏磳闁?);
+      lines.push(s.schedule.trim());
+    }
+
+    s.stories.forEach((story, idx) => {
+      const st = normalizeStory(story);
+      const has = st.title || st.subtitle || st.time || st.summary || st.body;
+      if (!has) return;
+
+      lines.push("\n---\n");
+      lines.push(`闂?{idx + 1}闂?{st.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎卞Λ娑㈠垂閻撳宫?}`);
+      if (st.subtitle) lines.push(st.subtitle);
+      if (st.time) lines.push(st.time);
+      if (st.summary) lines.push(`\n${st.summary}`);
+      if (st.body) lines.push(`\n${st.body}`);
+    });
+
+    return lines.join("\n");
+  };
+
+
+  const buildNewapiMarkdown = (state) => {
+    const s = normalizeState(state);
+
+    const stories = Array.isArray(s.stories) ? s.stories.map(normalizeStory) : [];
+    const list = stories.filter((st) => st.title || st.subtitle || st.time || st.summary || st.body);
+    const main = list[0] || normalizeStory(DEFAULT_STORY());
+
+    const dateText = s.date || todayISO();
+    const tags = parseTags(s.tags, 20);
+    const highlightItems = parseLines(s.highlights, 20);
+    const scheduleItems = parseLines(s.schedule, 20);
+
+    const htmlToMarkdownish = (rawHtml) => {
+      const extracted = tryExtractBodyFromHtmlDocument(rawHtml);
+      const sanitized = sanitizeHtml(extracted);
+      if (!sanitized.trim()) return "";
+
+      try {
+        const doc = new DOMParser().parseFromString(`<div>${sanitized}</div>`, "text/html");
+        const container = doc.body.firstElementChild || doc.body;
+
+        const walk = (node) => {
+          if (!node) return "";
+          if (node.nodeType === 3) return node.textContent || "";
+          if (node.nodeType !== 1) return "";
+
+          const tag = node.tagName.toLowerCase();
+          const childText = () => Array.from(node.childNodes).map(walk).join("");
+          const text = childText().trim();
+
+          if (tag === "br") return "\n";
+          if (tag === "p") return text ? `${text}\n\n` : "";
+          if (tag === "h2") return text ? `\n\n### ${text}\n\n` : "";
+          if (tag === "h3") return text ? `\n\n#### ${text}\n\n` : "";
+          if (tag === "hr") return "\n---\n";
+          if (tag === "strong") return text ? `**${text}**` : "";
+          if (tag === "em") return text ? `*${text}*` : "";
+          if (tag === "code") return text ? `\`${text}\`` : "";
+          if (tag === "pre") {
+            const code = String(node.textContent || "").replace(/\r\n/g, "\n").trim();
+            return code ? `\n\n\`\`\`\n${code}\n\`\`\`\n\n` : "";
+          }
+          if (tag === "blockquote") {
+            const inner = text;
+            if (!inner) return "";
+            const q = inner
+              .split("\n")
+              .map((line) => line.trim())
+              .filter(Boolean)
+              .map((line) => `> ${line}`)
+              .join("\n");
+            return q ? `\n\n${q}\n\n` : "";
+          }
+          if (tag === "ul" || tag === "ol") {
+            const items = Array.from(node.children)
+              .filter((c) => c.tagName && c.tagName.toLowerCase() === "li")
+              .map((li) => {
+                const liText = Array.from(li.childNodes)
+                  .map(walk)
+                  .join("")
+                  .trim()
+                  .replace(/\n+/g, " ");
+                return liText ? `- ${liText}` : "";
+              })
+              .filter(Boolean)
+              .join("\n");
+            return items ? `\n${items}\n\n` : "";
+          }
+          if (tag === "a") {
+            const href = node.getAttribute("href") || "";
+            const label = text || href;
+            if (!href) return label;
+            return `[${label}](${href})`;
+          }
+
+          return childText();
+        };
+
+        const out = Array.from(container.childNodes).map(walk).join("");
+        return out.replace(/\n{3,}/g, "\n\n").trim();
+      } catch {
+        return sanitized.replace(/<[^>]+>/g, "").replace(/\n{3,}/g, "\n\n").trim();
+      }
+    };
+
+    const normalizeBody = (story) => {
+      const st = normalizeStory(story);
+      const body = String(st.body || "").replace(/\r\n/g, "\n").trim();
+      if (!body) return "";
+
+      const looksLikeHtmlDoc = /\b<!doctype\b/i.test(body) || /<\s*(html|body)\b/i.test(body);
+      if (st.format === "html" || looksLikeHtmlDoc) return htmlToMarkdownish(body);
+
+      return body;
+    };
+
+    const lines = [];
+    const headlineTitle = main.title || "缂傚倷绶￠崹闈涚暦閻㈤潧鍨濇繛宸簻缁€鍌涖亜閹哄棗浜鹃梺?;
+    lines.push(`# 闂?{s.type}闂?{headlineTitle}`);
+    lines.push("");
+
+    const meta = [];
+    if (dateText) meta.push(`- 闂備礁鎼崯銊╁磿閹绘帪鑰块柨鐔哄У閺?{dateText}`);
+    if (s.dept) meta.push(`- 闂傚倷绶￠崰鎾诲礉閹存惊娑㈩敆閸曨剚娅?{s.dept}`);
+    if (s.severity) meta.push(`- 闂傚倷鐒﹁ぐ鍐矓閻戝鈧懘鏁冮崒姘辩暠閻熸粍绻勫Σ?{s.severity}`);
+    if (s.version) meta.push(`- 闂備胶绮〃鍛存偋婵犲偊鑰垮ù鐓庣摠閺?{s.version}`);
+    if (s.issue) meta.push(`- 闂備礁鎼悧蹇涘窗鎼淬們浜归柛褎顨嗛弲?{s.issue}`);
+    if (tags.length) meta.push(`- 闂備礁鎼粔鏉懨洪妸鈺婃晢闁绘垼濮ら弲?{tags.join("闂?)}`);
+    if (meta.length) {
+      lines.push(meta.join("\n"));
+      lines.push("");
+    }
+
+    if (highlightItems.length) {
+      lines.push("## 濠电偛鐡ㄧ划鐘诲窗濮樿泛纾?);
+      lines.push(highlightItems.map((x) => `- ${x}`).join("\n"));
+      lines.push("");
+    }
+
+    if (scheduleItems.length) {
+      lines.push("## 闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮?);
+      lines.push(scheduleItems.map((x) => `- ${x}`).join("\n"));
+      lines.push("");
+    }
+
+    const appendStory = (story, idx, { heading }) => {
+      const st = normalizeStory(story);
+      const has = st.title || st.subtitle || st.time || st.summary || st.body;
+      if (!has) return;
+
+      if (heading) {
+        lines.push(`## ${idx + 1}. ${st.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎卞Λ娑㈠垂閻撳宫?}`);
+        lines.push("");
+      }
+
+      if (st.subtitle) {
+        lines.push(`_${st.subtitle}_`);
+        lines.push("");
+      }
+
+      if (st.time) {
+        lines.push(`**闂備礁鎼崯顐︽偉閻撳宫娑㈠锤濡や焦娅?* ${st.time}`);
+        lines.push("");
+      }
+
+      if (st.summary) {
+        const q = String(st.summary || "")
+          .replace(/\r\n/g, "\n")
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => `> ${line}`)
+          .join("\n");
+        if (q) {
+          lines.push(q);
+          lines.push("");
+        }
+      }
+
+      const body = normalizeBody(st);
+      if (body) {
+        lines.push(body);
+        lines.push("");
+      }
+    };
+
+    const hasMainContent = main.subtitle || main.time || main.summary || main.body;
+    if (hasMainContent || list.length > 1) {
+      lines.push("---");
+      lines.push("");
+    }
+
+    appendStory(main, 0, { heading: false });
+
+    for (let i = 1; i < list.length; i += 1) {
+      lines.push("---");
+      lines.push("");
+      appendStory(list[i], i, { heading: true });
+    }
+
+    return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
+  };
+  const buildNewapiInlineHtml = (state) => {
+    const s = normalizeState(state);
+
+    const stories = Array.isArray(s.stories) ? s.stories.map(normalizeStory) : [];
+    const list = stories.filter((st) => st.title || st.subtitle || st.time || st.summary || st.body);
+    const main = list[0] || normalizeStory(DEFAULT_STORY());
+
+    const isoDate = s.date || todayISO();
+    const dotDate = formatDate(isoDate) || isoDate;
+    const year = /^\d{4}/.test(isoDate) ? isoDate.slice(0, 4) : String(new Date().getFullYear());
+
+    const tags = parseTags(s.tags, 20);
+    const highlightItems = parseLines(s.highlights, 20);
+    const scheduleItems = parseLines(s.schedule, 20);
+
+    const accent = s.accent;
+    const columns = ["1", "2", "3"].includes(String(s.columns)) ? String(s.columns) : "2";
+
+    const palette = {
+      paper: "#fafaf8",
+      edge: "#e4e4e7",
+      ink: "#09090b",
+      muted: "#3f3f46",
+      accent,
+    };
+
+    const rgba = {
+      ink72: "rgba(0, 0, 0, 0.72)",
+      ink66: "rgba(0, 0, 0, 0.66)",
+      ink62: "rgba(0, 0, 0, 0.62)",
+      line18: "rgba(0, 0, 0, 0.18)",
+      line16: "rgba(0, 0, 0, 0.16)",
+      line14: "rgba(0, 0, 0, 0.14)",
+      line12: "rgba(0, 0, 0, 0.12)",
+      line08: "rgba(0, 0, 0, 0.08)",
+      bg03: "rgba(0, 0, 0, 0.03)",
+      bg02: "rgba(0, 0, 0, 0.02)",
+      bg06: "rgba(0, 0, 0, 0.06)",
+    };
+
+    const fontHeading =
+      "Newsreader, Noto Serif SC, Source Han Serif SC, Songti SC, STSong, SimSun, Georgia, Times New Roman, serif";
+    const fontBody = "Roboto, ui-sans-serif, system-ui, -apple-system, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif";
+
+    const inlineCodeStyle =
+      "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace; font-size: 0.96em; background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.08); padding: 0.1em 0.35em; border-radius: 8px;";
+
+    const renderInlineNewapi = (raw) => {
+      const input = String(raw || "");
+
+      const codeSpans = [];
+      const withCodePlaceholders = input.replace(/`([^`]+)`/g, (_, code) => {
+        const idx = codeSpans.length;
+        codeSpans.push(code);
+        return `\u0000CODE${idx}\u0000`;
+      });
+
+      let out = escapeHtml(withCodePlaceholders);
+
+      out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+      out = out.replace(/\u0000CODE(\d+)\u0000/g, (_, idxRaw) => {
+        const idx = Number(idxRaw);
+        const code = codeSpans[idx] ?? "";
+        return `<span style="${inlineCodeStyle}">${escapeHtml(code)}</span>`;
+      });
+
+      return out;
+    };
+
+    const renderMarkdownNewapiInline = (markdown) => {
+      const lines = String(markdown || "").replace(/\r\n/g, "\n").split("\n");
+
+      const blocks = [];
+      const isRule = (line) => /^-{3,}$/.test(line.trim());
+      const isHeading = (line) => /^#{1,3}\s+/.test(line.trim());
+      const isQuote = (line) => /^>\s+/.test(line.trim());
+      const isList = (line) => /^-\s+/.test(line.trim());
+
+      let i = 0;
+      while (i < lines.length) {
+        const rawLine = lines[i];
+        const line = rawLine.trimEnd();
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+          i += 1;
+          continue;
+        }
+
+        if (isRule(trimmed)) {
+          blocks.push({ type: "hr" });
+          i += 1;
+          continue;
+        }
+
+        if (isHeading(trimmed)) {
+          const text = trimmed.replace(/^#{1,3}\s+/, "");
+          blocks.push({ type: "h", text });
+          i += 1;
+          continue;
+        }
+
+        if (isQuote(trimmed)) {
+          const quoteLines = [];
+          while (i < lines.length && isQuote(lines[i].trim())) {
+            quoteLines.push(lines[i].trim().replace(/^>\s+/, ""));
+            i += 1;
+          }
+          blocks.push({ type: "quote", text: quoteLines.join("\n") });
+          continue;
+        }
+
+        if (isList(trimmed)) {
+          const items = [];
+          while (i < lines.length && isList(lines[i].trim())) {
+            items.push(lines[i].trim().replace(/^-\s+/, ""));
+            i += 1;
+          }
+          blocks.push({ type: "list", items });
+          continue;
+        }
+
+        const paragraph = [];
+        while (i < lines.length) {
+          const cur = lines[i];
+          const curTrim = cur.trim();
+          if (!curTrim) {
+            i += 1;
+            break;
+          }
+          if (isRule(curTrim) || isHeading(curTrim) || isQuote(curTrim) || isList(curTrim)) break;
+          paragraph.push(cur.trimEnd());
+          i += 1;
+        }
+        blocks.push({ type: "p", lines: paragraph });
+      }
+
+      const hr = `<div style="height: 1px; background: ${rgba.line12}; margin: 16px 0;"></div>`;
+
+      const renderBlock = (b) => {
+        if (b.type === "hr") return hr;
+
+        if (b.type === "h") {
+          const text = renderInlineNewapi(b.text || "");
+          return `<div style="margin: 18px 0 10px; padding-top: 12px; border-top: 1px solid ${rgba.line14}; font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(0,0,0,0.70); font-weight: 900; break-inside: avoid;">${text}</div>`;
+        }
+
+        if (b.type === "quote") {
+          const content = String(b.text || "")
+            .split("\n")
+            .map((x) => x.trim())
+            .filter(Boolean)
+            .map((x) => renderInlineNewapi(x))
+            .join("<br />");
+          return `<div style="border-left: 3px solid rgba(0,0,0,0.20); padding: 10px 12px; background: rgba(0,0,0,0.03); border-radius: 12px; color: rgba(0,0,0,0.74); margin: 0 0 12px; break-inside: avoid;">${content}</div>`;
+        }
+
+        if (b.type === "list") {
+          const items = Array.isArray(b.items) ? b.items : [];
+          const lis = items
+            .map((x) => `<li style="margin: 0 0 6px;">${renderInlineNewapi(x)}</li>`)
+            .join("");
+          return `<ul style="margin: 0 0 12px; padding-left: 18px; break-inside: avoid;">${lis}</ul>`;
+        }
+
+        if (b.type === "p") {
+          const plines = Array.isArray(b.lines) ? b.lines : [];
+          const inner = plines.map((x) => renderInlineNewapi(x)).join("<br />");
+          return `<div style="margin: 0 0 12px; break-inside: avoid;">${inner}</div>`;
+        }
+
+        return "";
+      };
+
+      return blocks.map(renderBlock).join("");
+    };
+
+    const htmlToMarkdownish = (rawHtml) => {
+      const extracted = tryExtractBodyFromHtmlDocument(rawHtml);
+      const sanitized = sanitizeHtml(extracted);
+      if (!sanitized.trim()) return "";
+
+      try {
+        const doc = new DOMParser().parseFromString(`<div>${sanitized}</div>`, "text/html");
+        const container = doc.body.firstElementChild || doc.body;
+
+        const walk = (node) => {
+          if (!node) return "";
+          if (node.nodeType === 3) return node.textContent || "";
+          if (node.nodeType !== 1) return "";
+
+          const tag = node.tagName.toLowerCase();
+          const childText = () => Array.from(node.childNodes).map(walk).join("");
+          const text = childText().trim();
+
+          if (tag === "br") return "\n";
+          if (tag === "p") return text ? `${text}\n\n` : "";
+          if (tag === "h2") return text ? `\n\n## ${text}\n\n` : "";
+          if (tag === "h3") return text ? `\n\n### ${text}\n\n` : "";
+          if (tag === "hr") return "\n---\n";
+          if (tag === "strong") return text ? `**${text}**` : "";
+          if (tag === "em") return text ? `*${text}*` : "";
+          if (tag === "code") return text ? `\`${text}\`` : "";
+          if (tag === "pre") {
+            const code = String(node.textContent || "").replace(/\r\n/g, "\n").trim();
+            return code ? `\n\n\`\`\`\n${code}\n\`\`\`\n\n` : "";
+          }
+          if (tag === "blockquote") {
+            const inner = text;
+            if (!inner) return "";
+            const q = inner
+              .split("\n")
+              .map((line) => line.trim())
+              .filter(Boolean)
+              .map((line) => `> ${line}`)
+              .join("\n");
+            return q ? `\n\n${q}\n\n` : "";
+          }
+          if (tag === "ul" || tag === "ol") {
+            const items = Array.from(node.children)
+              .filter((c) => c.tagName && c.tagName.toLowerCase() === "li")
+              .map((li) => {
+                const liText = Array.from(li.childNodes)
+                  .map(walk)
+                  .join("")
+                  .trim()
+                  .replace(/\n+/g, " ");
+                return liText ? `- ${liText}` : "";
+              })
+              .filter(Boolean)
+              .join("\n");
+            return items ? `\n${items}\n\n` : "";
+          }
+          if (tag === "a") {
+            const href = node.getAttribute("href") || "";
+            const label = text || href;
+            if (!href) return label;
+            return `${label} (${href})`;
+          }
+
+          return childText();
+        };
+
+        const out = Array.from(container.childNodes).map(walk).join("");
+        return out.replace(/\n{3,}/g, "\n\n").trim();
+      } catch {
+        return sanitized.replace(/<[^>]+>/g, "").replace(/\n{3,}/g, "\n\n").trim();
+      }
+    };
+
+    const storyToMarkdown = (story) => {
+      const st = normalizeStory(story);
+      const joined = [st.summary, st.body].filter(Boolean).join("\n\n");
+      if (!joined.trim()) return "";
+
+      const looksLikeHtmlDoc = /\b<!doctype\b/i.test(joined) || /<\s*(html|body)\b/i.test(joined);
+      if (st.format === "html" || looksLikeHtmlDoc) return htmlToMarkdownish(joined);
+
+      return joined;
+    };
+
+    const renderStoryBody = (story) => {
+      const md = storyToMarkdown(story);
+      if (!md.trim()) return `<div style="color: ${rgba.ink62};">闂備焦瀵х粙鎴︽偋婵犲倵鏋旈煫鍥ㄧ☉缁秹鏌ｅΟ璇插闁告柡鍋撻梻浣告惈閸婄霉閸曨厽顫?/div>`;
+      return renderMarkdownNewapiInline(md);
+    };
+
+    const severityBadge = (sev) => {
+      const v = sev === "濠? || sev === "濠? || sev === "濠? ? sev : "濠?;
+      let color = "#92400e";
+      let bg = "rgba(245, 158, 11, 0.14)";
+      let border = "rgba(245, 158, 11, 0.28)";
+      if (v === "濠?) {
+        color = "#991b1b";
+        bg = "rgba(239, 68, 68, 0.12)";
+        border = "rgba(239, 68, 68, 0.28)";
+      }
+      if (v === "濠?) {
+        color = "#065f46";
+        bg = "rgba(16, 185, 129, 0.12)";
+        border = "rgba(16, 185, 129, 0.26)";
+      }
+
+      return `<span style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; border: 1px solid ${border}; font-weight: 800; letter-spacing: 0.12em; color: ${color}; background: ${bg};">${escapeHtml(v)}</span>`;
+    };
+
+    const card = (title, innerHtml) => {
+      return `
+        <div style="border: 1px solid ${rgba.line12}; border-radius: 16px; background: rgba(255,255,255,0.62); padding: 12px;">
+          <div style="margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 900; color: ${rgba.ink62};">${escapeHtml(
+        title
+      )}</div>
+          <div style="font-size: 13px; line-height: 1.6;">${innerHtml}</div>
+        </div>
+      `.trim();
+    };
+
+    const renderList = (items) => {
+      if (!items.length) return "";
+      const lis = items.map((x) => `<li style="margin: 0 0 6px;">${escapeHtml(x)}</li>`).join("");
+      return `<ul style="margin: 0; padding-left: 16px;">${lis}</ul>`;
+    };
+
+    const renderTags = (items) => {
+      if (!items.length) return "";
+      const tagStyle = `display: inline-flex; align-items: center; border: 1px solid ${rgba.line12}; border-radius: 999px; padding: 5px 10px; background: rgba(0,0,0,0.02); font-size: 12px;`;
+      const wrap = items.map((t) => `<span style="${tagStyle}">${escapeHtml(t)}</span>`).join(" ");
+      return `<div style="display: flex; gap: 8px; flex-wrap: wrap;">${wrap}</div>`;
+    };
+
+    const sidebarCards = [];
+    if (highlightItems.length) sidebarCards.push(card("濠电偛鐡ㄧ划鐘诲窗濮樿泛纾?, renderList(highlightItems)));
+    if (scheduleItems.length) sidebarCards.push(card("闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮?, renderList(scheduleItems)));
+    if (tags.length) sidebarCards.push(card("闂備礁鎼粔鏉懨洪妸鈺婃晢?, renderTags(tags)));
+
+    const hasSidebar = sidebarCards.length > 0;
+
+    const separator = `<div style="height: 1px; background: ${rgba.line12}; margin: 16px 0; column-span: all;"></div>`;
+
+    const extraStoriesHtml = list
+      .slice(1)
+      .map((story) => {
+        const st = normalizeStory(story);
+        if (!st.title && !st.subtitle && !st.time && !st.summary && !st.body) return "";
+
+        const title = st.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎卞Λ娑㈠垂閻撳宫?;
+        const titleHtml = `<div style="font-family: ${fontHeading}; font-weight: 650; font-size: 18px; line-height: 1.2; margin: 18px 0 6px; break-inside: avoid;">${escapeHtml(
+          title
+        )}</div>`;
+
+        const deckHtml = st.subtitle
+          ? `<div style="color: ${rgba.ink62}; font-size: 13px; line-height: 1.6; margin: 0 0 12px; break-inside: avoid;">${escapeHtml(
+              st.subtitle
+            )}</div>`
+          : "";
+
+        const timeHtml = st.time
+          ? `<div style="color: ${rgba.ink62}; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 12px; break-inside: avoid;">${escapeHtml(
+              st.time
+            )}</div>`
+          : "";
+
+        return `${separator}${titleHtml}${deckHtml}${timeHtml}${renderStoryBody(st)}`;
+      })
+      .join("");
+
+    const articleBody = `
+      <div style="column-count: ${escapeHtml(columns)}; column-gap: 22px; font-size: 14px; line-height: 1.8;">
+        ${renderStoryBody(main)}
+        ${extraStoriesHtml}
+      </div>
+    `.trim();
+
+    const bodyLayout = hasSidebar
+      ? `
+      <div style="display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; padding-top: 18px;">
+        <div style="flex: 1; min-width: 240px;">${articleBody}</div>
+        <div style="width: 280px; flex: 0 0 280px; display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+          ${sidebarCards.join("")}
+        </div>
+      </div>
+    `.trim()
+      : `
+      <div style="padding-top: 18px;">
+        ${articleBody}
+      </div>
+    `.trim();
+
+    const titleText = main.title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎遍幊搴ゃ亹閸℃稒鐓?;
+
+    const headlineDeck = main.subtitle
+      ? `<div style="margin: 10px 0 0; color: ${rgba.ink66}; font-size: 16px; line-height: 1.55; max-width: 70ch;">${escapeHtml(
+          main.subtitle
+        )}</div>`
+      : "";
+
+    const headlineTime = main.time
+      ? `<div style="margin-top: 8px; color: ${rgba.ink62}; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">${escapeHtml(
+          main.time
+        )}</div>`
+      : "";
+
+    const leftItems = [
+      `<span style="color: ${palette.accent}; font-weight: 800;">${escapeHtml(s.type || "闂備胶顭堝ù姘跺礈濞嗘挸绠?)}</span>`,
+      dotDate ? `<span style="color: ${rgba.ink72};">${escapeHtml(dotDate)}</span>` : "",
+      s.dept ? `<span style="color: ${rgba.ink72};">${escapeHtml(s.dept)}</span>` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const rightItems = [
+      severityBadge(s.severity),
+      s.issue ? `<span style="color: ${rgba.ink72};">${escapeHtml(s.issue)}</span>` : "",
+      s.version ? `<span style="color: ${rgba.ink72};">${escapeHtml(s.version)}</span>` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const out = `
+<div style="background: ${palette.paper}; color: ${palette.ink}; padding: 22px; border-radius: 18px; border: 1px solid ${palette.edge}; box-shadow: 0 12px 40px rgba(0,0,0,0.08); font-size: 14px; line-height: 1.7; font-family: ${fontBody}; max-width: 860px; margin: 0 auto; box-sizing: border-box;">
+  <div style="display: grid; gap: 10px; padding-bottom: 14px; border-bottom: 3px double ${rgba.line18};">
+    <div style="font-family: ${fontHeading}; font-weight: 700; text-align: center; letter-spacing: 0.18em; text-transform: uppercase; font-size: 30px; line-height: 1.1;">NEWAPI TIMES</div>
+    <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid ${rgba.line14}; border-bottom: 1px solid ${rgba.line14}; padding: 8px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; flex-wrap: wrap;">
+      <div style="display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap;">${leftItems}</div>
+      <div style="display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap;">${rightItems}</div>
+    </div>
+  </div>
+
+  <div style="padding-top: 14px;">
+    <div style="margin: 0; font-family: ${fontHeading}; font-weight: 650; font-size: 40px; line-height: 1.04; letter-spacing: -0.02em;">${escapeHtml(
+      titleText
+    )}</div>
+    ${headlineDeck}
+    ${headlineTime}
+  </div>
+
+  ${bodyLayout}
+
+  <div style="margin-top: 18px; padding-top: 10px; border-top: 3px double ${rgba.line16}; color: ${rgba.ink62}; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12px;">
+    <div>濠?${escapeHtml(year)} newapi 闁?Bulletin</div>
+    <div style="text-transform: uppercase; letter-spacing: 0.1em;">Generated by newapi</div>
+  </div>
+</div>
+    `.trim();
+
+    return out
+      .replace(/\r\n/g, "\n")
+      .replace(/\n\s+/g, "\n")
+      .replace(/\n{2,}/g, "\n")
+      .trim()
+      .replace(/\n/g, "");
+  };
+
+  const safeJsonForHtmlScript = (obj) => {
+    return JSON.stringify(obj)
+      .replaceAll("<", "\\u003c")
+      .replaceAll(">", "\\u003e")
+      .replaceAll("&", "\\u0026")
+      .replaceAll("\u2028", "\\u2028")
+      .replaceAll("\u2029", "\\u2029");
+  };
+
+  const buildExportDocument = (state) => {
+    const s = normalizeState(state);
+
+    const css = String(window.NEWAPI_EXPORT_CSS || "").trim();
+    const body = renderAnnouncement(s);
+
+    const title = s.stories[0]?.title ? normalizeStory(s.stories[0]).title : "newapi 闂備胶顭堝ù姘跺礈濞嗘挸绠?;
+
+    const paperClass = ["paper", s.optDropcap ? "dropcap" : ""].filter(Boolean).join(" ");
+    const embedded = safeJsonForHtmlScript(s);
+
+    return `<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>${escapeHtml(title)}</title>
+  <style>${css}</style>
+</head>
+<body>
+  <main class="page">
+    <div class="${paperClass}" style="--accent: ${escapeHtml(s.accent)}; --body-columns: ${escapeHtml(s.columns)};">
+      ${body}
+    </div>
+  </main>
+
+  <script id="newapi-announcement-state" type="application/json">${embedded}</script>
+</body>
+</html>`;
+  };
+
+  const openPrintWindow = (html) => {
+    const w = window.open("", "_blank", "noopener,noreferrer");
+    if (!w) return null;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    return w;
+  };
+  const printViaIframe = (html) => {
+    const value = String(html || "");
+
+    try {
+      const frame = document.createElement("iframe");
+      frame.setAttribute("title", "print");
+      frame.setAttribute("aria-hidden", "true");
+      frame.style.position = "fixed";
+      frame.style.right = "0";
+      frame.style.bottom = "0";
+      frame.style.width = "0";
+      frame.style.height = "0";
+      frame.style.border = "0";
+      frame.style.visibility = "hidden";
+      frame.srcdoc = value;
+
+      document.body.appendChild(frame);
+
+      return new Promise((resolve) => {
+        const clean = () => {
+          try {
+            frame.remove();
+          } catch {
+            // ignore
+          }
+        };
+
+        const timer = window.setTimeout(() => {
+          clean();
+          resolve(false);
+        }, 2500);
+
+        frame.addEventListener(
+          "load",
+          () => {
+            window.clearTimeout(timer);
+            try {
+              frame.contentWindow?.focus();
+              frame.contentWindow?.print();
+              resolve(true);
+            } catch {
+              resolve(false);
+            }
+
+            window.setTimeout(clean, 30000);
+          },
+          { once: true }
+        );
+      });
+    } catch {
+      return Promise.resolve(false);
+    }
+  };  const extractJsonFromText = (text) => {
+    const raw = String(text || "").trim();
+    if (!raw) throw new Error("empty");
+
+    const fence = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    const candidate = (fence ? fence[1] : raw).trim();
+
+    const first = candidate.indexOf("{");
+    const last = candidate.lastIndexOf("}");
+    if (first !== -1 && last !== -1 && last > first) {
+      return JSON.parse(candidate.slice(first, last + 1));
+    }
+
+    return JSON.parse(candidate);
+  };
+
+  const parseExportedHtml = (html) => {
+    const text = String(html || "");
+    const doc = new DOMParser().parseFromString(text, "text/html");
+
+    const stateScript = doc.getElementById("newapi-announcement-state");
+    if (stateScript && stateScript.textContent && stateScript.textContent.trim()) {
+      return normalizeState(JSON.parse(stateScript.textContent.trim()));
+    }
+
+    const paper = doc.querySelector(".paper");
+    const news = doc.querySelector(".news");
+    if (!paper || !news) return null;
+
+    const kicker = doc.querySelector(".kicker")?.textContent?.trim() || "濠电偛鐡ㄧ猾鍌炲礃閳哄倸鍓梻浣告惈濞层倝鎮洪妸鈺佽摕?;
+    const headline = doc.querySelector(".headline")?.textContent?.trim() || "";
+    const deck = doc.querySelector(".deck")?.textContent?.trim() || "";
+
+    const leftItems = Array.from(doc.querySelectorAll(".issue-left .issue-item"))
+      .map((x) => x.textContent?.trim())
+      .filter(Boolean);
+
+    const dateDot = leftItems[0] || "";
+    const date = /^\d{4}\.\d{2}\.\d{2}$/.test(dateDot) ? dateDot.replaceAll(".", "-") : todayISO();
+    const dept = leftItems.length > 1 ? leftItems[1] : "";
+
+    const sevText = doc.querySelector(".badge")?.textContent?.trim() || "濠?;
+    const severity = ["濠?, "濠?, "濠?].includes(sevText) ? sevText : "濠?;
+
+    const rightItems = Array.from(doc.querySelectorAll(".issue-right .issue-item"))
+      .map((x) => x.textContent?.trim())
+      .filter(Boolean);
+
+    const issue = rightItems.find((x) => /no\.?/i.test(x)) || rightItems[0] || "";
+    const version = rightItems.find((x) => /^v\d/i.test(x)) || (rightItems.length > 1 ? rightItems[1] : "");
+
+    const style = paper.getAttribute("style") || "";
+    const accent = normalizeHexColor(style.match(/--accent:\s*([^;]+);/i)?.[1], DEFAULT_STATE.accent);
+    const columns = String(style.match(/--body-columns:\s*([^;]+);/i)?.[1] || "2").trim();
+
+    const optDropcap = paper.classList.contains("dropcap");
+
+    const articleBody = doc.querySelector(".article-body");
+    const contentHtml = articleBody ? articleBody.innerHTML : "";
+
+    const readCardList = (title) => {
+      const card = Array.from(doc.querySelectorAll(".card-callout")).find(
+        (c) => c.querySelector(".card-title")?.textContent?.trim() === title
+      );
+      if (!card) return "";
+      const items = Array.from(card.querySelectorAll("li"))
+        .map((li) => li.textContent?.trim())
+        .filter(Boolean);
+      return items.map((x) => `- ${x}`).join("\n");
+    };
+
+    const readCardTags = () => {
+      const card = Array.from(doc.querySelectorAll(".card-callout")).find(
+        (c) => c.querySelector(".card-title")?.textContent?.trim() === "闂備礁鎼粔鏉懨洪妸鈺婃晢?
+      );
+      if (!card) return "";
+      const tags = Array.from(card.querySelectorAll(".tag"))
+        .map((t) => t.textContent?.trim())
+        .filter(Boolean);
+      return tags.join(", ");
+    };
+
+    return normalizeState({
+      ...DEFAULT_STATE,
+      type: kicker,
+      date,
+      dept,
+      severity,
+      version,
+      issue,
+      tags: readCardTags(),
+      highlights: readCardList("濠电偛鐡ㄧ划鐘诲窗濮樿泛纾?),
+      schedule: readCardList("闂備礁鎼崯顐︽偉閻撳宫娑氭崉閵娿垹浜鹃柣鐔煎亰濡插綊鎮?),
+      stories: [
+        {
+          ...DEFAULT_STORY(),
+          title: headline,
+          subtitle: deck,
+          format: "html",
+          body: contentHtml,
+        },
+      ],
+      optA4: true,
+      optDropcap,
+      columns: ["1", "2", "3"].includes(columns) ? columns : "2",
+      accent,
+    });
+  };
+
+  const ensureContent = (state) => {
+    const s = normalizeState(state);
+    const ok = s.stories.some((x) => x.title || x.subtitle || x.summary || x.body);
+    if (!ok) flashStatus("闂佽崵濮村ú銈夊床閺屻儱鍌ㄦ繛鎴炵懅缁犳瑦銇勯幇鈺佺仼闁哄懏鎮傞弻鈥愁吋閸涱喖鏋犲銈忕导缁瑩鐛€ｎ喖鍐€妞ゎ厽鍨垫俊褔姊?);
+    return ok;
+  };
+
+  const updateStorySummaryTitle = (cardEl) => {
+    const titleInput = cardEl.querySelector('[data-field="title"]');
+    const title = titleInput ? String(titleInput.value || "").trim() : "";
+    const titleSpan = cardEl.querySelector('[data-role="story-title"]');
+    if (titleSpan) titleSpan.textContent = title || "闂備礁鎼悧婊勭濠婂牆绠犻柨鐔哄Т鐟欙妇鈧箍鍎卞Λ娑㈠垂閻撳宫?;
+  };
+
+  const moveStory = (stories, from, to) => {
+    if (to < 0 || to >= stories.length) return stories;
+    const next = stories.slice();
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    return next;
+  };
+
+  const loadAiSettings = () => {
+    const saved = safeStorage.get(AI_SETTINGS_KEY);
+    if (!saved || typeof saved !== "object") return;
+
+    if (aiEls.baseUrl) aiEls.baseUrl.value = String(saved.baseUrl || "");
+    if (aiEls.model) aiEls.model.value = String(saved.model || "");
+    if (aiEls.apiKey && saved.apiKey) aiEls.apiKey.value = String(saved.apiKey || "");
+    if (aiEls.remember) aiEls.remember.checked = Boolean(saved.apiKey);
+  };
+
+  const saveAiSettingsIfNeeded = () => {
+    if (!aiEls.baseUrl || !aiEls.model || !aiEls.apiKey || !aiEls.remember) return;
+
+    const baseUrl = aiEls.baseUrl.value.trim();
+    const model = aiEls.model.value.trim();
+    const remember = aiEls.remember.checked;
+    const apiKey = remember ? aiEls.apiKey.value.trim() : "";
+
+    safeStorage.set(AI_SETTINGS_KEY, { baseUrl, model, apiKey });
+  };
+
+  const normalizeOpenAiBaseUrl = (baseUrl) => {
+    const raw = String(baseUrl || "").trim().replace(/\/+$/, "");
+    if (!raw) return "";
+    if (raw.endsWith("/v1")) return raw;
+    return `${raw}/v1`;
+  };
+
+  const buildAiSystemPrompt = (count, nowDate) => {
+    const n = Number.isFinite(count) && count > 0 ? Math.min(10, Math.floor(count)) : 0;
+
+    return `濠电偠鎻徊鎸庢叏闂堟党锝夊川婵犲嫧鏋栭梺閫炲苯澧紒瀣樀椤㈡梹鎷呴幓鎺嶅濠电偞鎸婚々绺瞐pi 闂備胶顢婄紙浼村磿閹惰姤鍊垮┑鐘插枤濡插綊骞栫划鍏夊亾閸愯尙绋婚梻浣告啞缁嬫垿鏁冮敃鍌氭瀬闁规崘顕х粻锝夋煙闁箑澧柣婵勫€濋弻宥夊Ψ閿斿墽鐣煎┑鐐茬墛閸ㄥ灝鐣峰鈧畷銊╊敇瑜嶉弲锝囩磽閸屾艾鈧綊鎮ч悙鍨偨妞ゆ劧绠戠粈澶愭煃閸濆嫬鈧悂路娓氣偓閺屾洟宕遍弴鐘殿唶n\n闂備胶鍎甸弲鈺呭窗濡ゅ懏鍋夐柨婵嗩槹閺咁剚鎱ㄥ鍡楀箹閹喖姊哄ú缁樺▏闁告柨绉瑰畷鍝勨槈濞嗘劗绉堕梺瑙勫劤閸熷灝顕ｉ幎鑺ョ厸濞达絽澹婇崵鐔兼煙椤旂》韬鐐差儔楠炲洭顢欓悙顒€鐨鹃梻浣告惈椤戝懐鈧凹鍓涢埀?JSON闂備焦瀵х粙鎴︽儔婵傜鏋侀柕鍫濇椤╂煡骞栨潏鍓хɑ闁哄懏鎮傞弻鐔衡偓娑櫭慨鍐磼閺傝法鎽犵紒鍌涘浮閹崇偤濡烽妷鎰尵缁辨帡鎮欓浣糕偓鎰亜閵夛附宕岀€规洘顨婇、妤呭焵椤掑嫬绠熼柨鐔哄Т杩濇繛锝呮处閹猾n闂佸搫顦悧濠囧箰閹间礁鍚规い鎾跺У閸熷搫霉閿濆懏璐℃繝鈧幘顔界叆婵炴垶鐟ч幗姊? 闂備礁鎲￠悷顖涚閿濆洦顐芥い鎾卞灩缁€?JSON闂備焦瀵х粙鎴︽偋閸涱垳绠斿璺烘湰閸?Markdown 濠电偛顕刊瀵稿緤閸ф鍋夋繝濠傜墕闁裤倖淇婇悙鑼癁闁稿鎸婚幏鍛槹鎼达絾鍠掗梺鑽ゅ枑濞叉垵霉閸ヮ亶鏆伴梻鍌欑劍瑜板啴鈥﹂鐘愁潟婵繃妯? 濠电偞鍨堕幖鈺呭储娴犲鍑犻柛鎰ㄦ櫅椤曡鲸淇婇姘儓閻㈩垬鍎甸弻銊モ槈濡粯鎷遍柣銏╁灣閸嬫挸顭囪箛娑欏€烽柟纰卞幖婵⊙囨倵濞堝灝鏋涚紒璇茬墦閸┾偓妞ゆ垼鍎婚崗宀勬煟閿濆棛绠撻悡銈吤归敐鍥舵毌闁稿鎸婚幏鍛矙閸喖顥涢梻浣侯焾濞存岸宕滃▎鎾崇疅妞も槅鏅? stories 闂備胶鍘ч崲鏌ュ疮閸ф鍎?1 闂備礁鎼ˇ顐⑽ｉ崟顓燁潟閺夊牄鍔嬬换鍡涙煕鐏炲墽銆掑ù婊庡灦閺岋綁锝為鈧俊浠嬫煕閳哄倻鈯曟繛鐓庣箻楠炴﹢宕橀幓鎺撹緢闂備礁鎼€氼剛鈧稈鏅涜灒濠㈣埖鍔曠粈宀勬煕濞戝崬骞楅柛搴㈡尭椤潡鎳滈悽娈挎殹濠电偟鈷堥崹璺虹暦濮椻偓瀹曘劑顢樿閺咃綁姊?n>1闂備焦瀵х粙鎴︽儗娓氣偓椤㈡岸顢楅崟顐ゎ唵闂佺硶鍓濋〃鍛存倵婵犳碍鐓欓悗娑櫭慨鍥ㄣ亜閿曗偓濞尖€愁嚕?stories\n- date 濠电偠鎻紞鈧繛澶嬫礋瀵?YYYY-MM-DD闂備焦瀵х粙鎴︽偋閹捐泛鍨濇い鏍ㄧ矋婵?${nowDate}闂備焦瀵х粙鎴﹀Υ閳х惢- severity 闂備礁鎲￠悷顖涚閿濆绀傛慨妞诲亾鐎殿喕鍗抽、娑㈠Χ閸モ晝宕跺┑?/ 濠?/ 濠电偠鎻徊浠嬪礄閻ｅ本顫曟繛鍡樺姦濞撹埖淇婇娑卞劌闁告艾娲ら埥澶愬箼閸愩劌浼庣紓浣介哺閻☆摯- stories[].format 闂備焦鎮堕崕閬嶅箹椤愶附鍋╅柣鎰靛墯缂嶅洭鏌熼幆褍鏆辨慨?markdown\n\nJSON Schema闂備焦瀵х粙鎺楁偤椤＄\n  "type": "濠电偛鐡ㄧ猾鍌炲礃閳哄倸鍓梻浣告惈濞层倝鎮洪妸鈺佽摕濠碘槄绻濆鍫曞煛閸屾艾顫庡┑鐑囩秵閸ｏ綁寮婚崨顓ф僵閺夊牃鏅涘鈻呴梺璇叉捣閹虫捇藝椤栫偛鐭楅煫鍥ㄧ☉缁€鍌涖亜閹哄棗浜鹃梺鐟版▕閺€銈呪攽閻愯泛钄兼い鏇嗗嫭鍙忛柍鍝勬噹缁€鍌涖亜閹哄棗浜鹃梺鐟版▕閺€銈夋⒑缁嬭法绠叉繝鈧崷顓炲灊?,\n  "date": "YYYY-MM-DD",\n  "dept": "",\n  "severity": "濠德板€曢崐褰掆€栭崱妞绘闁规崘鍩栭幆宥嗙箾?,\n  "version": "",\n  "issue": "",\n  "tags": "tag1, tag2",\n  "highlights": "- ...\\n- ...",\n  "schedule": "...",\n  "stories": [\n    {\n      "title": "",\n      "subtitle": "",\n      "time": "YYYY-MM-DD HH:mm(闂備礁鎲￠悷顖炲垂閸洖鐒?",\n      "format": "markdown",\n      "summary": "",\n      "body": ""\n    }\n  ]\n}`;
+  };
+
+  const aiGenerate = async () => {
+    if (!aiEls.prompt) return;
+
+    const prompt = aiEls.prompt.value.trim();
+    if (!prompt) {
+      flashStatus("闂佽崵濮村ú銈夊床閺屻儱鍌ㄦ繛鎴炵懅缁犳瑦銇勯幇鈺佺仼闁哄懏鎮傞幃鐑藉即濮橀硸妲悷婊勬緲閸婂潡骞嗛崘顔肩妞ゆ劑鍨洪弳銉╂煟?);
+      return;
+    }
+
+    const count = aiEls.count ? Number(aiEls.count.value) : 0;
+    const baseUrlRaw = aiEls.baseUrl ? aiEls.baseUrl.value.trim() : "";
+    const model = (aiEls.model ? aiEls.model.value.trim() : "") || "gpt-4.1-mini";
+    const apiKey = aiEls.apiKey ? aiEls.apiKey.value.trim() : "";
+
+    saveAiSettingsIfNeeded();
+
+    flashStatus("AI 闂備焦鐪归崹濠氬窗閹版澘鍨傛慨姗嗗幘閳?..", 8000);
+
+    try {
+      const nowDate = todayISO();
+      const system = buildAiSystemPrompt(count, nowDate);
+
+      let resultObj = null;
+
+      if (!baseUrlRaw) {
+        const res = await fetch("/api/ai/announcement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, count, nowDate }),
+        });
+
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(t || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        resultObj = data.state || data;
+      } else {
+        if (!apiKey) throw new Error("缂傚倸鍊搁崐鎼佸箹椤愶附鍎?API Key闂備焦瀵х粙鎴︽偋閸℃瑧纾介柟鎹愬煐婵吋銇勯弮鍥у姷婵?/api/ai/announcement 濠电偛顕刊瀵稿緤閸ф绠栧┑鐘叉处閺?);
+
+        const baseUrl = normalizeOpenAiBaseUrl(baseUrlRaw);
+        const endpoint = `${baseUrl}/chat/completions`;
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            temperature: 0.35,
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: prompt },
+            ],
+          }),
+        });
+
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(t || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        const content = data?.choices?.[0]?.message?.content;
+        if (!content) throw new Error("AI 闂佸搫顦弲婊堝蓟閵娿儍娲冀閵娧€鏋栭梺鎯х箰閸樻粓寮?);
+        resultObj = extractJsonFromText(content);
+      }
+
+      const current = readFormState();
+      const aiState = normalizeState(resultObj);
+
+      const merged = {
+        ...aiState,
+        optA4: current.optA4,
+        optDropcap: current.optDropcap,
+        optWatermark: current.optWatermark,
+        columns: current.columns,
+        accent: current.accent,
+      };
+
+      applyStateToForm(merged);
+      render(merged, { persist: true });
+
+      flashStatus("AI 闁诲氦顫夐悺鏇犱焊濞嗘挸鏋侀柟鎹愵嚙缁狅綁鏌熼柇锕€澧查悗姘懃閳规垶寰勫Ο杞扮盎闂?);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      flashStatus(`AI 闂備焦鐪归崹濠氬窗閹版澘鍨傛慨姗嗗幖缁剁偤寮堕崼顐函鐞氭繈姊?{msg}`, 3200);
+    }
+  };
+
+  const wire = () => {
+    resolveDomRefs();
+
+    const essentialOk = formEls.type && formEls.stories && previewEl;
+    if (!essentialOk) {
+      const msg =
+        "濠碉紕鍋戦崐妤呭极鐠囧樊鐒藉ù鍏兼綑缁€鍡樼節闂堟稒锛嶆繛鍏碱殜閺屾盯寮介妸褍鈪归梺闈涙处閸ㄥ綊骞忚ぐ鎺懳ㄦい鏍ㄧ矌閻涖儵姊鸿ぐ鎺撴锭鐟滄壆鍋熺划顓熷緞閹邦剛顦梺鍝勵槸閻忔繆銇愰悩缁樷拺?DOM 闂備胶顭堢换鎰板疮閹殿喚鐭嗙€光偓閸曨倠銉╂煕鐏炲墽绠ラ柛銈囧仱閺岋綁锝為鈧俊鑺ョ節閳ь剟寮跺▎鎯ф櫊闂侀潧顦崕鍗烆嚗閺冨牊鐓?index.html 闂備胶鎳撻悘姘跺箰閸濄儲顫曢柟杈鹃檮閺咁剟鎮橀悙鏉戝姢闁诲繑顨婂鍫曞煛閸屾艾顫戝?node server.js 闂備礁鎲￠懝鎯ь潩閿曞偆鏁婇柡宥庡幗閳?http://localhost:3210闂?;
+      const previewFallback = $("preview");
+      if (previewFallback) previewFallback.innerHTML = `<div class="paper-empty">${escapeHtml(msg)}</div>`;
+      if (statusEl) statusEl.textContent = msg;
+      return;
+    }
+
+    const saved = safeStorage.get(STORAGE_KEY) || safeStorage.get(LEGACY_STORAGE_KEY);
+    const initial = normalizeState(saved || DEFAULT_STATE);
+
+    applyStateToForm(initial);
+    render(initial, { persist: false });
+
+    loadAiSettings();
+
+    if (previewUiEls.tabPreview && previewUiEls.tabCode) {
+      previewUiEls.tabPreview.addEventListener("click", () => setPreviewMode("preview"));
+      previewUiEls.tabCode.addEventListener("click", () => setPreviewMode("code"));
+      setPreviewMode(previewMode, initial);
+    }
+
+    const form = $("form");
+    if (form) {
+      form.addEventListener("input", () => {
+        renderFromFormSafe({ persist: true });
+      });
+      form.addEventListener("change", () => {
+        renderFromFormSafe({ persist: true });
+      });
+    }
+
+    formEls.stories?.addEventListener("input", (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement))
+        return;
+
+      const card = target.closest("details.story-card");
+      if (!card) return;
+
+      if (target.getAttribute("data-field") === "title") updateStorySummaryTitle(card);
+    });
+
+    formEls.stories?.addEventListener("click", (e) => {
+      const target = eventTargetElement(e);
+      if (!target) return;
+      const btn = target.closest("button[data-action]");
+      if (!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const action = btn.getAttribute("data-action") || "";
+      const card = btn.closest("details.story-card");
+      const idx = card ? Number(card.getAttribute("data-index")) : NaN;
+      if (!Number.isFinite(idx)) return;
+
+      const state = readFormState();
+      const stories = state.stories.slice();
+
+      if (action === "up") {
+        const next = moveStory(stories, idx, idx - 1);
+        applyStoriesToForm(next);
+        render({ ...state, stories: next }, { persist: true });
+        return;
+      }
+      if (action === "down") {
+        const next = moveStory(stories, idx, idx + 1);
+        applyStoriesToForm(next);
+        render({ ...state, stories: next }, { persist: true });
+        return;
+      }
+      if (action === "dup") {
+        const next = stories.slice();
+        next.splice(idx + 1, 0, { ...stories[idx] });
+        applyStoriesToForm(next);
+        render({ ...state, stories: next }, { persist: true });
+        flashStatus("闁诲海鎳撻幉陇銇愰崘顔㈠洭寮婚妷銉ь槴闂佽偐顭堥悘姘舵嫃鐎ｎ喗鐓?);
+        return;
+      }
+      if (action === "del") {
+        if (stories.length <= 1) return;
+        const next = stories.slice();
+        next.splice(idx, 1);
+        applyStoriesToForm(next);
+        render({ ...state, stories: next }, { persist: true });
+        flashStatus("闁诲海鎳撻幉陇銇愰崘顔煎瀭鐟滅増甯楅埛鏃堟煏閸繃顥為柦鍌氼儔閺?);
+      }
+    });
+
+    actionEls.addStory?.addEventListener("click", () => {
+      const state = readFormState();
+      const next = state.stories.concat([DEFAULT_STORY()]);
+      applyStoriesToForm(next);
+      render({ ...state, stories: next }, { persist: true });
+      flashStatus("闁诲骸婀遍…鍫濐嚕閸洖閿ゅ┑鐘叉搐缁€澶愭煟濡寧鐝柦鍌氼儔閺?);
+    });
+
+    actionEls.sample?.addEventListener("click", () => {
+      applyStateToForm(SAMPLE_STATE);
+      render(SAMPLE_STATE, { persist: true });
+      flashStatus("闁诲海鎳撻幉陇銇愰崘顔芥櫜闁绘劕鎼粈鍌炴煏婢诡垯妞掔划鍨箾?);
+    });
+
+    actionEls.reset?.addEventListener("click", () => {
+      safeStorage.clear(STORAGE_KEY);
+      safeStorage.clear(LEGACY_STORAGE_KEY);
+      applyStateToForm(DEFAULT_STATE);
+      render(DEFAULT_STATE, { persist: false });
+      flashStatus("闁诲骸婀遍…鍫濐嚕閸撲胶鍗氶柤濮愬€楅惌?);
+    });
+
+    actionEls.import?.addEventListener("click", () => {
+      actionEls.importFile?.click();
+    });
+
+    actionEls.importFile?.addEventListener("change", async (e) => {
+      const input = e.target;
+      if (!(input instanceof HTMLInputElement)) return;
+      const file = input.files?.[0];
+      input.value = "";
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const name = (file.name || "").toLowerCase();
+
+        let nextState = null;
+        if (name.endsWith(".json") || text.trim().startsWith("{")) {
+          nextState = normalizeState(JSON.parse(text));
+        } else if (name.endsWith(".html") || /<\s*html\b/i.test(text) || /\b<!doctype\b/i.test(text)) {
+          nextState = parseExportedHtml(text);
+          if (!nextState) throw new Error("闂備礁鎼崯鐗堟叏閻㈠灚鍏滈柛鎾茬劍鐎氭岸鏌涢埄鍐炬當闁绘帒銈搁弻?HTML闂備焦瀵х粙鎴︽偋閸℃瑧纾介柟鎹愬煐婵吋銇勯弮鍌楁嫛闁搞們鍊濋弻娑滅疀鐎ｎ亜濮曞┑鐘亾闁哄顑欓崯鍛存煏婢跺牆鍔氱€电増妫冮幃妤呮偨闂堟稑浠橀梺鎼炲€ら崣鍐箚?HTML闂?);
+        } else {
+          throw new Error("濠电偛顕慨鎾箠韫囨稑鏋佹い鏇楀亾妤犵偞鍔栭幏鍛村礈閹绘帗顔撻梻?.json 闂?.html");
+        }
+
+        applyStateToForm(nextState);
+        render(nextState, { persist: true });
+        flashStatus("闁诲海鎳撻幉陇銇愰崘顕呮晪闂侇剙绉寸粈?);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        flashStatus(`闂佽娴烽弫鎼佸储瑜斿畷锝夊幢濡櫣绐為柡澶婄墱閸嬪顤傞梻?{msg}`, 2600);
+      }
+    });
+
+    actionEls.export?.addEventListener("click", () => {
+      const state = readFormState();
+      if (!ensureContent(state)) return;
+
+      const options = [
+        { value: "export:json", label: "闂佽娴烽弫鎼佸储瑜斿畷?JSON", desc: "濠电姰鍨煎▔娑樏洪敐澶婅埞?濠电偛鐡ㄧ划宀勫嫉椤掑嫷鏁冮柤娴嬫櫇绾句粙鏌″搴″閻㈩垰妫濋弻銊モ槈濡厧顣圭紓浣稿綁閸楀啿鐣烽妷褌娌柣鎰靛墻濡差垶姊洪悷鎵粵闁圭鎽滃Σ鎰板箣閿曗偓缁犮儵鎮楅敐搴濈盎鐞氱喐绻濋姀锝嗙【缂佸鎸冲畷鍝勎旈埀顒勩€呮總绋垮耿妞ゆ挾濮烽ˇ?, meta: "JSON" },
+        { value: "export:html", label: "闂佽娴烽弫鎼佸储瑜斿畷?HTML", desc: "闂備礁鎲￠悷锕傚垂閻㈢數鍗?闂備胶鎳撻悘姘跺箰缁嬭法鏆ら柛鎰靛枟閺咁剟鏌涢锝囩煂缂佹劖顨婇弻娑橆潩椤掍焦鎷卞┑锛勫仜閸婂潡鐛澶婄鐎规洖娲ㄩ敍娑㈡⒑瑜版帗娑фい鎴濇噺閹便劑鍩￠崒姘辩獮閻庡箍鍎遍幊搴ㄦ偂閹寸偘绻嗘俊銈傚亾婵☆偄顕Σ?, meta: "HTML" },
+      ];
+
+      const ok = showActionModal("闂傚倷绶￠崑鍕囬幍顔瑰亾濮樸儱濡块柍褜鍓涢弫鎼佸储瑜斿畷鐢割敇閵忕姴鍞ㄩ梺缁樻尭濞撮娑甸埀?, options, async (value) => {
+        const s = readFormState();
+        if (!ensureContent(s)) return;
+
+        const date = s.date || todayISO();
+        const name = sanitizeFileName(s.stories[0]?.title || "announcement");
+
+        if (value === "export:json") {
+          const text = JSON.stringify(s, null, 2);
+          const filename = `newapi-announcement_${date}_${name}.json`;
+          const saved = await saveTextFile(filename, text, "application/json");
+          showTextForManualCopy("闂佽娴烽弫鎼佸储瑜斿畷?JSON闂備焦瀵х粙鎴︽偋婵犲啯娅犳繝濠傜墕缁€澶愭煏婵炲灝鍔存俊鎻掝煼閺?濠电儑绲藉ú锔炬崲閸岀偞鍋ら柕濞炬櫆閺?, text);
+          flashStatus(saved ? "闁诲海鎳撻幉陇銇愰崘顕呮晪闂侇剙绉寸粈?JSON" : "闁诲氦顫夐悺鏇犱焊濞嗘挸鏋侀柟鎹愵嚙缁?JSON闂備焦瀵х粙鎴︽偋婵犲嫮鐭堥柤濮愬€栭崰鍡涙煕椤愶絿绠栭柣婵勫€濋弻娑樷枎濡櫣浠撮梺绋跨箲閿曘垽鐛箛娑欐櫆闁芥ê顦遍崝鍨箾閹寸偞灏い鎴濈墕闇夐柛銉墯閺?);
+          return;
+        }
+
+        if (value === "export:html") {
+          const html = buildExportDocument(s);
+          const filename = `newapi-announcement_${date}_${name}.html`;
+          const saved = await saveTextFile(filename, html, "text/html");
+          showTextForManualCopy("闂佽娴烽弫鎼佸储瑜斿畷?HTML闂備焦瀵х粙鎴︽偋婵犲啯娅犳繝濠傜墕缁€澶愭煏婵炲灝鍔存俊鎻掝煼閺?濠电儑绲藉ú锔炬崲閸岀偞鍋ら柕濞炬櫆閺?, html);
+          flashStatus(saved ? "闁诲海鎳撻幉陇銇愰崘顕呮晪闂侇剙绉寸粈?HTML" : "闁诲氦顫夐悺鏇犱焊濞嗘挸鏋侀柟鎹愵嚙缁?HTML闂備焦瀵х粙鎴︽偋婵犲嫮鐭堥柤濮愬€栭崰鍡涙煕椤愶絿绠栭柣婵勫€濋弻娑樷枎濡櫣浠撮梺绋跨箲閿曘垽鐛箛娑欐櫆闁芥ê顦遍崝鍨箾閹寸偞灏い鎴濈墕闇夐柛銉墯閺?);
+        }
+      });
+
+      if (!ok) flashStatus("闂佽娴烽弫鎼佸储瑜斿畷鐢割敇閻旈绐為柡澶婄墱閸嬪顤傞梻浣瑰缁嬫帡鎳濇ィ鍐╁殗濠电姴瀚悳缁樹繆閵堝嫮鍔嶇€殿喗鎹囬弻娑㈠箳閹惧墎鐣靛銈庡亝閸旀瑥鐣?, 2600);
+    });
+
+    actionEls.copy?.addEventListener("click", () => {
+      const state = readFormState();
+      if (!ensureContent(state)) return;
+
+      const options = [
+        { value: "copy:md", label: "Markdown闂備焦瀵х粙鎴濓耿椤﹀API闂?, desc: "闂備胶顭堢换鎺楀储瑜旈、娆撳箛閺夎法鐣遍悷婊冮閵嗘帡鎳滈悽鐢告?, meta: "MD" },
+        { value: "copy:inline-html", label: "NewAPI HTML闂備焦瀵х粙鎴︽偋閸℃稑鑸归柟缁㈠枟閸ゅ倿鏌￠崘锝呬壕闂佺粯顨呭畷顒勵敋閿濆牏鐤€闁靛／鍜佹Т", desc: "闂備礁鎼ú銈夋偤閵娧勬殰閻庢稒蓱娴溿倝鏌熺€电浠滅悮姘辩磽娴ｇ懓鍔ら柟璇х磿閺侇噣骞樼紒妯轰罕闂佸壊鍋掗崜娑氱矆閸曨垱鈷掗柛銉到娴?NewAPI 闂備浇銆€閸嬫挻銇勯弽銊р槈闁?HTML闂?, meta: "HTML" },
+        { value: "copy:html", label: "HTML 婵犵數濮嶉崟顐㈩潕闂?, desc: "闂備焦妞垮鍧楀礉鐎ｎ剝濮虫い鎺戝缂佲晜銇勯弽銊р槈闁伙富鍣ｉ幃妤呮偡閻楀牊鎷遍梺?HTML 闂備焦鐪归崝宀€鈧凹鍣ｉ弻鍫⑩偓闈涙憸绾?, meta: "HTML" },
+      ];
+
+      const ok = showActionModal("闂傚倷绶￠崑鍕囬幍顔瑰亾濮樸儱濡界€垫澘瀚濂稿川椤撶姴骞€闂備礁鎼粔鍫曞储瑜忓Σ?, options, async (value) => {
+        const s = readFormState();
+        if (!ensureContent(s)) return;
+
+        if (value === "copy:md") {
+          const text = buildNewapiMarkdown(s);
+          const copied = await copyText(text);
+          if (!copied) showTextForManualCopy("Markdown闂備焦瀵х粙鎴濓耿椤﹀API闂?, text);
+          flashStatus(copied ? "闁诲海鎳撻幉陇銇愰崘顔㈠洭寮婚妷銉ь槴?Markdown" : "闂備胶鍘ч〃搴㈢濠婂嫭鍙忛柍鍝勫€哥欢鐐碘偓骞垮劚閹冲酣鎮￠幋婵愮唵闁诡垱澹嗙花鍧楁偡濞嗘瑧鐣甸柡浣哥Т椤繈顢楅埀顒勫吹閹烘鐓欓柛顭戝亝鐏忣厾绱掓潏銊ョ伌妤犵偛绉堕埀顒婄秵娴滄粏顤勫┑鐘灱濞夋稓绮旈幘顔兼槬婵°倐鍋撴い?, copied ? 1400 : 2600);
+          return;
+        }
+
+        if (value === "copy:inline-html") {
+          try {
+            const html = buildNewapiInlineHtml(s);
+            const copied = await copyText(html);
+            if (!copied) showTextForManualCopy("NewAPI HTML闂備焦瀵х粙鎴︽偋閸℃稑鑸归柟缁㈠枟閸ゅ倿鏌￠崘锝呬壕闂佺粯顨呭畷顒勵敋閿濆牏鐤€闁靛／鍜佹Т", html);
+            flashStatus(copied ? "闁诲海鎳撻幉陇銇愰崘顔㈠洭寮婚妷銉ь槴?NewAPI HTML" : "闂備胶鍘ч〃搴㈢濠婂嫭鍙忛柍鍝勫€哥欢鐐碘偓骞垮劚閹冲酣鎮￠幋婵愮唵闁诡垱澹嗙花鍧楁偡濞嗘瑧鐣甸柡浣哥Т椤繈顢楅埀顒勫吹閹烘鐓欓柛顭戝亝鐏忣厾绱掓潏銊ョ伌妤犵偛绉堕埀顒婄秵娴滄粏顤勫┑鐘灱濞夋稓绮旈幘顔兼槬婵°倐鍋撴い?, copied ? 1400 : 2600);
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            flashStatus(`濠电姰鍨煎▔娑氱矓閹绢喖鏄ユ俊銈勭缁剁偤寮堕崼顐函鐞氭繈姊?{msg}`, 2600);
+          }
+          return;
+        }
+
+        if (value === "copy:html") {
+          const html = buildExportDocument(s);
+          const copied = await copyText(html);
+          if (!copied) showTextForManualCopy("HTML 婵犵數濮嶉崟顐㈩潕闂?, html);
+          flashStatus(copied ? "闁诲海鎳撻幉陇銇愰崘顔㈠洭寮婚妷銉ь槴?HTML 婵犵數濮嶉崟顐㈩潕闂? : "闂備胶鍘ч〃搴㈢濠婂嫭鍙忛柍鍝勫€哥欢鐐碘偓骞垮劚閹冲酣鎮￠幋婵愮唵闁诡垱澹嗙花鍧楁偡濞嗘瑧鐣甸柡浣哥Т椤繈顢楅埀顒勫吹閹烘鐓欓柛顭戝亝鐏忣厾绱掓潏銊ョ伌妤犵偛绉堕埀顒婄秵娴滄粏顤勫┑鐘灱濞夋稓绮旈幘顔兼槬婵°倐鍋撴い?, copied ? 1400 : 2600);
+        }
+      });
+
+      if (!ok) flashStatus("濠电姰鍨煎▔娑氱矓閹绢喖鏄ユ俊銈勭缁剁偤寮堕崼顐函鐞氭繈姊洪幐搴ｂ姇闁煎綊绠栭幊妯荤節閸曨厾骞撳┑掳鍊撻悞锕€顕ｉ幘缁樼厱闁圭儤鎸剧粻鎾淬亜椤愶絽濮嶇€?, 2600);
+    });
+    actionEls.print?.addEventListener("click", async () => {
+      const state = readFormState();
+      if (!ensureContent(state)) return;
+
+      const html = buildExportDocument(state);
+
+      const w = openPrintWindow(html);
+      if (w) {
+        w.addEventListener(
+          "load",
+          () => {
+            try {
+              w.focus();
+              w.print();
+            } catch {
+              // ignore
+            }
+          },
+          { once: true }
+        );
+        flashStatus("闁诲骸婀遍…鍫濐嚕閼稿灚娅犻柨鏇楀亾妞ゆ洩缍侀崺鈧い鎺戝缁犮儵鏌熼幆褍鏆辩紒?, 1600);
+        return;
+      }
+
+      const ok = await printViaIframe(html);
+      if (ok) {
+        flashStatus("闁诲骸婀遍…鍫濐嚕閼稿灚娅犻柨鏇楀亾妞ゆ洩缍侀崺鈧い鎺戝缁犮儵鏌熼幆褍鏆辩紒?, 1600);
+        return;
+      }
+
+      showTextForManualCopy("闂備胶鎳撻悘姘跺箰缁嬭法鏆ら柛鎰ㄦ櫅缁剁偤寮堕崼顐函鐞氭繈姊洪幐搴ｂ姇濞ｅ洦妞介、姘额敆閸曨偆顓奸柣搴秵娴滄粏顤勫┑鐑囩到濞诧妇鎹㈤崒鐐村仱闁靛濡囬埢?HTML 闂備礁鎲￠懝鍓р偓娑掓櫆閺呭爼鏁冮崒姘鳖攨?, html);
+      flashStatus("闂備胶鎳撻悘姘跺箰缁嬭法鏆ら柛鎰ㄦ櫅缁剁偤寮堕崼顐函鐞氭繈姊洪幐搴ｂ姇闁煎綊绠栧畷娆撴晸閻樿尙顓奸梺瑙勫劤绾绢厾澹曟繝姘厵闂傚牊渚楅崕蹇撯攽椤旇娅嗙€垫澘瀚濂稿川椤撶姴骞€婵?, 2600);
+    });
+    actionEls.aiGenerate?.addEventListener("click", () => {
+      aiGenerate();
+    });
+
+    const actionRoot = actionModalEls.root;
+    if (actionRoot) {
+      const close = () => closeActionModal();
+
+      actionModalEls.close?.addEventListener("click", close);
+      actionRoot.addEventListener("click", (e) => {
+        const target = eventTargetElement(e);
+        if (!target) return;
+
+        if (target.getAttribute("data-action") === "close") {
+          close();
+          return;
+        }
+
+        const opt = target.closest("button[data-value]");
+        if (!opt || !onActionModalSelect) return;
+
+        const value = opt.getAttribute("data-value") || "";
+        const callback = onActionModalSelect;
+        close();
+
+        Promise.resolve(callback(value)).catch((err) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          flashStatus(`闂備胶鎳撻悘婵堢矓瀹曞洨绀婇柡鍐ｅ亾鐎垫澘瀚蹇涱敃閵夋劖娲熼弻?{msg}`, 2800);
+        });
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !actionRoot.hidden) close();
+      });
+    }
+
+    const modalRoot = copyModalEls.root;
+    if (modalRoot) {
+      const close = () => closeCopyModal();
+
+      copyModalEls.close?.addEventListener("click", close);
+      modalRoot.addEventListener("click", (e) => {
+        const target = eventTargetElement(e);
+        if (!target) return;
+        if (target.getAttribute("data-action") === "close") {
+          close();
+        }
+      });
+
+      copyModalEls.select?.addEventListener("click", () => {
+        copyModalEls.text?.focus();
+        copyModalEls.text?.select();
+      });
+
+      copyModalEls.copy?.addEventListener("click", async () => {
+        const val = copyModalEls.text?.value || "";
+        const ok = await copyText(val);
+        flashStatus(ok ? "闁诲海鎳撻幉陇銇愰崘顔㈠洭寮婚妷銉ь槴? : "濠电姰鍨煎▔娑氱矓閹绢喖鏄ユ俊銈勭缁剁偤寮堕崼顐函鐞氭繈姊洪幐搴ｂ姇濞ｅ洦妞介、姘额敆閸曨偆顓奸柣搴秵娴滄粏顤?Ctrl+C", ok ? 1400 : 2600);
+        if (ok) close();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modalRoot.hidden) close();
+      });
+    }
+
+    window.__NEWAPI_ANNOUNCER_READY__ = true;
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wire, { once: true });
+  } else {
+    wire();
+  }
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

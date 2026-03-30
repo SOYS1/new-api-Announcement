@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-30T09:30:05.136672+00:00",
+  "root": "E:\\my\\newapi 2",
+  "git_top": "E:\\my\\newapi 2",
+  "delete": [],
+  "duplicates": [],
+  "stats": {
+    "delete_items": 0,
+    "duplicate_groups": 0,
+    "duplicate_files_to_delete": 0,
+    "bytes_delete_items_known": 0,
+    "bytes_duplicates": 0,
+    "bytes_total_known": 0
+  }
+}
